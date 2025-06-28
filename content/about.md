@@ -7,7 +7,9 @@ author: ["AJ Van Beest"]
 
 ## The world is a crazy-beautiful place
 
-I'm AJ Van Beest - father, husband, sailor, cyber security pro, and chooser of "rocky, uphill paths." Currently working at the intersection of AI, automation, and security operations.
+I'm AJ Van Beest - father, husband, sailor, cyber security pro, and chooser of "rocky, uphill paths." 
+
+Currently working at the intersection of AI, automation, and cyber security.
 
 ## What I Do
 
