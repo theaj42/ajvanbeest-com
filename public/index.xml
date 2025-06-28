@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+      <title>AJ Van Beest</title>
+      <link>https://ajvanbeest.com</link>
+      <description>Last 10 notes on AJ Van Beest</description>
+      <generator>Quartz -- quartz.jzhao.xyz</generator>
+      <item>
+    <title>About</title>
+    <link>https://ajvanbeest.com/about</link>
+    <guid>https://ajvanbeest.com/about</guid>
+    <description>About AJ The Multi-Faceted Being of Pure Energy I’m AJ Van Beest - cybersecurity professional, sailing enthusiast, pickleball player, and general technology experimenter.</description>
+    <pubDate>Sat, 28 Jun 2025 18:52:39 GMT</pubDate>
+  </item><item>
+    <title>Welcome to AJ&#039;s Digital Garden</title>
+    <link>https://ajvanbeest.com/</link>
+    <guid>https://ajvanbeest.com/</guid>
+    <description>Hey there! 👋 Welcome to my corner of the internet.</description>
+    <pubDate>Sat, 28 Jun 2025 18:52:28 GMT</pubDate>
+  </item><item>
+    <title>Hello World: Building a Digital Garden</title>
+    <link>https://ajvanbeest.com/posts/hello-world</link>
+    <guid>https://ajvanbeest.com/posts/hello-world</guid>
+    <description>Hello World: Building a Digital Garden Well, here we are. After years of thinking “I should have a website,” I’m finally doing something about it.</description>
+    <pubDate>Sat, 28 Jun 2025 05:00:00 GMT</pubDate>
+  </item>
+    </channel>
+  </rss>
