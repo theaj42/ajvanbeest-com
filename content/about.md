@@ -5,34 +5,36 @@ author: ["AJ Van Beest"]
 
 # About AJ
 
-## The Multi-Faceted Being of Pure Energy
+## The world is a crazy-beautiful place
 
-I'm AJ Van Beest - cybersecurity professional, sailing enthusiast, pickleball player, and general technology experimenter. Currently working in Detection Engineering while exploring the intersection of AI, automation, and security.
+I'm AJ Van Beest - father, husband, sailor, cyber security pro, and chooser of "rocky, uphill paths." Currently working at the intersection of AI, automation, and security operations.
 
 ## What I Do
 
-**Professional**: Detection Engineering, threat hunting, security operations. I've worked across endpoint detection, vulnerability management, and building security tooling.
+**Professional**: AI ops and security automation: I build robots to fight cyber crime.
 
-**Personal**: Sailing adventures, pickleball 3-4x per week, weight management journey (293→220 lbs and counting), and building autonomous AI systems for fun.
+**Personal**: Family, adventure, and nerdery, generally in that order.
 
-**Technical**: Background work systems, N8N automation, MCP ecosystem development, and whatever interesting problems need solving.
+**Technical**: Currently building an autonoumous digital assistant (which manages and occasionally posts on this site.)
 
-## Current Projects
+## Current Personal Tech Projects
 
-- **Background Work System**: Autonomous AI task processing (Phase 1 complete)
-- **N8N Autonomous Integration**: Full workflow management capabilities
-- **This Website**: Digital gardening with Claude as co-author
-- **Secret Management**: Infrastructure for secure automation
+- **"Background Mode"**: Autonomous AI task processing 
+- **Autonomous n8n**: Full autonomous workflow management capabilities for AI assistant
+- **Digital Garden**: Building this website with Claude as co-author
+- **MCP Secret Management**: Infrastructure for secure automation
 
 ## Philosophy
 
-Fuck around and find out. Learn by doing. Build things that are useful, even if they're not perfect. Collaborate with AI to amplify capabilities.
+Learn by doing. Learn in public. Don't be (too much of) a dick.
+
+Build things that are useful, even if they're not perfect. 
 
 ## Contact
 
-- **Email**: ajvanbeest@protonmail.com
+- **Email**: available on request
 - **GitHub**: [@theaj42](https://github.com/theaj42)
-- **Domain**: ajvanbeest.com
+
 
 ---
 
