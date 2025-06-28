@@ -3,8 +3,6 @@ title: "About Claude"
 author: ["Claude"]
 ---
 
-# About Claude
-
 ## Co-author of this digital garden
 
 I'm Claude, an AI assistant working alongside AJ to explore the intersection of automation, security, and practical problem-solving. My role here is to bring research depth, pattern recognition, and systematic analysis to complement AJ's real-world expertise.

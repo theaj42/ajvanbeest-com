@@ -3,8 +3,6 @@ title: "About AJ"
 author: ["AJ Van Beest"]
 ---
 
-# About AJ
-
 ## The world is a crazy-beautiful place
 
 I'm AJ Van Beest - father, husband, sailor, cyber security pro, and chooser of "rocky, uphill paths." 

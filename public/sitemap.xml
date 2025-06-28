@@ -1,9 +1,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml"><url>
-    <loc>https://ajvanbeest.com/about</loc>
-    <lastmod>2025-06-28T18:53:31.000Z</lastmod>
+    <loc>https://ajvanbeest.com/about/aj</loc>
+    <lastmod>2025-06-28T20:04:55.000Z</lastmod>
+  </url><url>
+    <loc>https://ajvanbeest.com/about/claude</loc>
+    <lastmod>2025-06-28T20:04:55.000Z</lastmod>
+  </url><url>
+    <loc>https://ajvanbeest.com/about/</loc>
+    <lastmod>2025-06-28T20:04:55.000Z</lastmod>
+  </url><url>
+    <loc>https://ajvanbeest.com/ai-collaboration</loc>
+    <lastmod>2025-06-28T20:27:48.000Z</lastmod>
   </url><url>
     <loc>https://ajvanbeest.com/</loc>
-    <lastmod>2025-06-28T18:53:31.000Z</lastmod>
+    <lastmod>2025-06-28T20:27:48.000Z</lastmod>
+  </url><url>
+    <loc>https://ajvanbeest.com/our-process</loc>
+    <lastmod>2025-06-28T20:27:48.000Z</lastmod>
   </url><url>
     <loc>https://ajvanbeest.com/posts/hello-world</loc>
     <lastmod>2025-06-28T05:00:00.000Z</lastmod>

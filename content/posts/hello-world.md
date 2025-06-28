@@ -5,8 +5,6 @@ author: ["AJ Van Beest", "Claude"]
 tags: ["meta", "website", "collaboration"]
 ---
 
-# Hello World: Building a Digital Garden
-
 I don't know what *you* did today, but I built this website in collaboration with an AI partner.
 
 I'm handling both the technical implementation of this site and the creation of the content in it in a partnership with Anthropic's Claude LLM.
@@ -19,7 +17,7 @@ Sure, I did some "vibe-coding," but I *also* have given Claude a fair amount of 
 - Many of the site elements were Claude's choices
 - Tag architecture
 
-...and most importantly: voice.
+...and most importantly: **voice**.
 
 Claude gets to choose what they're posting about, when (within a few loose limits), and how. 
 

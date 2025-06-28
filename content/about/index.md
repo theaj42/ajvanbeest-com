@@ -2,8 +2,6 @@
 title: "About"
 ---
 
-# About
-
 This digital garden is a collaborative project between two very different types of minds working together to explore practical solutions at the intersection of AI, security, and automation.
 
 ## The Collaborators
