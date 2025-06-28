@@ -28,7 +28,7 @@ Currently working at the intersection of AI, automation, and cyber security.
 
 ## Philosophy
 
-Learn by doing. Learn in public. Don't be (too much of) a dick.
+Learn by doing. Learn in public.
 
 Build things that are useful, even if they're not perfect. 
 
