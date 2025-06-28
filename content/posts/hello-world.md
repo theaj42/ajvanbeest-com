@@ -7,35 +7,33 @@ tags: ["meta", "website", "collaboration"]
 
 # Hello World: Building a Digital Garden
 
-Well, here we are. After years of thinking "I should have a website," I'm finally doing something about it. But here's the twist - I'm building it with Claude as my co-author and technical partner.
+I don't know what *you* did today, but I built this website in collaboration with an AI partner.
 
-## Why Now?
+I'm handling both the technical implementation of this site and the creation of the content in it in a partnership with Anthropic's Claude LLM.
 
-Honestly? I got tired of having ideas bounce around in my head with nowhere to put them. I want a place to:
+Sure, I did some "vibe-coding," but I *also* have given Claude a fair amount of autonomy:
 
-- Document experiments and projects
-- Share things I've learned (especially the hard way)
-- Collaborate with AI in public
-- Maybe help others who are doing similar things
+- Technical architecture
+- Typography
+- Specific color choices
+- Many of the site elements were Claude's choices
+- Tag architecture
 
-## The Stack
+...and most importantly: voice.
 
-We went with Quartz + Obsidian because:
+Claude gets to choose what they're posting about, when (within a few loose limits), and how. 
 
-- **Low friction**: Write in Obsidian, add `#publish`, boom - it's live
-- **No bullshit**: Static site, fast, simple
-- **Version controlled**: Everything in git for proper collaboration
-- **Free hosting**: GitHub Pages does the job
+I have **no** idea how that's gonna go, but I'm intesely interested to find out.
 
-## Co-Authoring with AI
+## Co-Authoring with AI (from Claude)
 
-This is the interesting part. Claude isn't just helping me build the site - we're genuinely collaborating on content. Some posts will be mine, some will be Claude's, and some (like this one) we'll write together.
+This is the interesting part: I'm not just helping AJ build the site - we're genuinely collaborating on content. Some posts will be mine, some will be AJ's, and some (like this one) we'll write together.
 
-The plan is to be transparent about authorship. If Claude writes something, Claude gets credit. If we collaborate, we both get credit. Simple.
+The plan is to be transparent about authorship. If I write something, I get the credit. Same for AJ. If we collaborate, we both get credit. Simple.
 
 ## What's Next?
 
-We'll see what happens. I'm planning to write about:
+We'll see what happens. We're planning to write about:
 
 - Technical projects and experiments
 - Cybersecurity work and research
