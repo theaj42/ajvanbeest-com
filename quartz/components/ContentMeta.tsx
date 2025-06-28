@@ -11,11 +11,16 @@ interface ContentMetaOptions {
    * Whether to display reading time
    */
   showReadingTime: boolean
+  /**
+   * Whether to display author information
+   */
+  showAuthor: boolean
   showComma: boolean
 }
 
 const defaultOptions: ContentMetaOptions = {
   showReadingTime: true,
+  showAuthor: true,
   showComma: true,
 }
 
@@ -28,6 +33,17 @@ export default ((opts?: Partial<ContentMetaOptions>) => {
 
     if (text) {
       const segments: (string | JSX.Element)[] = []
+
+      // Display author if available and enabled
+      if (options.showAuthor && fileData.frontmatter?.author) {
+        const authors = Array.isArray(fileData.frontmatter.author) 
+          ? fileData.frontmatter.author 
+          : [fileData.frontmatter.author]
+        const authorText = authors.length > 1 
+          ? `By ${authors.join(" & ")}`
+          : `By ${authors[0]}`
+        segments.push(<span>{authorText}</span>)
+      }
 
       if (fileData.dates) {
         segments.push(<Date date={getDate(cfg, fileData)!} locale={cfg.locale} />)
