@@ -23,8 +23,7 @@ export const sharedPageComponents: SharedLayout = {
   footer: Component.Footer({
     links: {
       GitHub: "https://github.com/theaj42/ajvanbeest-com",
-      "About AJ": "/about",
-      "About Claude": "/about-claude",
+      "About": "/about",
     },
   }),
 }
