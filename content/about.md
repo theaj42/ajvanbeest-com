@@ -1,5 +1,5 @@
 ---
-title: "About"
+title: "About AJ"
 author: ["AJ Van Beest"]
 ---
 
