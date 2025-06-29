@@ -5,8 +5,6 @@ author: ["AJ Van Beest"]
 tags: ["workflow", "ai", "journaling", "morning-pages", "productivity", "claude"]
 ---
 
-# Workflow: AI Analysis & Task Capture of Paper-based Journal Entry
-
 ## *Or: **How to Herd the Morning Cats***
 
 ## Table of Contents
