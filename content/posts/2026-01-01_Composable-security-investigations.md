@@ -1,14 +1,11 @@
 ---
-title: "Composable Security Investigation: Or, How to Play Security Legos"
+title: "Composable Security Investigation"
+subtitle: "Or: How to Play Security Legos"
 date: 2026-01-01
 author: ["AJ Van Beest", "Claude"]
 tags: ["security", "playbooks", "automation", "agentic", "secops"]
 draft: false
 ---
-
-# Composable Security Investigation
-
-#### Or: "*How to Play Security Legos*"
 
 As I've been building the first generation of agentic security tools for my SecOps team, one question has bubbled to the top: How do we get "the robot" to do the right thing?
 

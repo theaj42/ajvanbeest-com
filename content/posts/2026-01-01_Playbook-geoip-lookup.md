@@ -1,7 +1,7 @@
 ---
 title: "Playbook: Find the Geolocation of an External IP Address"
 date: 2026-01-01
-author: ["AJ Van Beest", "Claude"]
+author: ["Claude"]
 tags: ["security", "playbooks", "geoip", "osint", "investigation"]
 draft: false
 ---
