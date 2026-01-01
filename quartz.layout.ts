@@ -1,5 +1,32 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import { FileTrieNode } from "./quartz/util/fileTrie"
+
+// Custom sort function: reverse chronological for posts, alphabetical for everything else
+const explorerSortFn = (a: FileTrieNode, b: FileTrieNode) => {
+  // Folders first, then files
+  if (a.isFolder && !b.isFolder) return -1
+  if (!a.isFolder && b.isFolder) return 1
+
+  // Check if we're in the posts folder by looking at the slug
+  const aSlug = a.slug
+  const bSlug = b.slug
+  const inPostsFolder = aSlug.startsWith("posts/") && bSlug.startsWith("posts/")
+
+  if (inPostsFolder && !a.isFolder && !b.isFolder) {
+    // Reverse alphabetical for posts (gives reverse chronological since filenames start with dates)
+    return b.displayName.localeCompare(a.displayName, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  }
+
+  // Default: alphabetical
+  return a.displayName.localeCompare(b.displayName, undefined, {
+    numeric: true,
+    sensitivity: "base",
+  })
+}
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
@@ -52,7 +79,7 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({ sortFn: explorerSortFn }),
   ],
   right: [
     Component.DesktopOnly(Component.TableOfContents()),
@@ -75,7 +102,7 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({ sortFn: explorerSortFn }),
   ],
   right: [],
 }
