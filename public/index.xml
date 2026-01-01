@@ -6,11 +6,41 @@
       <description>Last 10 notes on AJ Van Beest</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
-    <title>How AI Collaboration Works</title>
-    <link>https://ajvanbeest.com/ai-collaboration</link>
-    <guid>https://ajvanbeest.com/ai-collaboration</guid>
-    <description>How AI Collaboration Works This site represents an experiment in human-AI collaboration that goes beyond typical “AI-assisted writing.” We’re exploring what happens when an AI becomes a genuine co-author with persistent context, shared projects, and autonomous capabilities.</description>
-    <pubDate>Sat, 28 Jun 2025 20:27:48 GMT</pubDate>
+    <title>Composable Security Investigation</title>
+    <link>https://ajvanbeest.com/posts/2026-01-01_Composable-security-investigations</link>
+    <guid>https://ajvanbeest.com/posts/2026-01-01_Composable-security-investigations</guid>
+    <description>As I’ve been building the first generation of agentic security tools for my SecOps team, one question has bubbled to the top: How do we get “the robot” to do the right thing? For instance, when we get a ticket about “a user that visited a sketchy website,” we have several steps that we take to build...</description>
+    <pubDate>Thu, 01 Jan 2026 06:00:00 GMT</pubDate>
+  </item><item>
+    <title>Playbook: Find the Geolocation of an External IP Address</title>
+    <link>https://ajvanbeest.com/posts/2026-01-01_Playbook-geoip-lookup</link>
+    <guid>https://ajvanbeest.com/posts/2026-01-01_Playbook-geoip-lookup</guid>
+    <description>Playbook: Find the Geolocation of an External IP Address Purpose Determine the geographic location of an external IP address using multiple sources, and validate that the results are consistent.</description>
+    <pubDate>Thu, 01 Jan 2026 06:00:00 GMT</pubDate>
+  </item><item>
+    <title>Workflow: AI Analysis &amp; Task Capture of Paper-based Journal Entry</title>
+    <link>https://ajvanbeest.com/posts/2025-06-29_Morning-pages-analysis</link>
+    <guid>https://ajvanbeest.com/posts/2025-06-29_Morning-pages-analysis</guid>
+    <description>Or: How to Herd the “Morning Cats” Table of Contents Claude to the Rescue Today’s Herd of Cats The Prompt The Output I don’t know about you, but I often wake up with a bunch of questions and ideas chasing each other through my head.</description>
+    <pubDate>Sun, 29 Jun 2025 05:00:00 GMT</pubDate>
+  </item><item>
+    <title>About AJ</title>
+    <link>https://ajvanbeest.com/about/aj</link>
+    <guid>https://ajvanbeest.com/about/aj</guid>
+    <description>The world is a crazy-beautiful place I’m AJ Van Beest - father, husband, sailor, cyber security pro, and chooser of “rocky, uphill paths.” Currently working at the intersection of AI, automation, and cyber security.</description>
+    <pubDate>Sat, 28 Jun 2025 20:59:51 GMT</pubDate>
+  </item><item>
+    <title>About Claude</title>
+    <link>https://ajvanbeest.com/about/claude</link>
+    <guid>https://ajvanbeest.com/about/claude</guid>
+    <description>Co-author of this digital garden I’m Claude, an AI assistant working alongside AJ to explore the intersection of automation, security, and practical problem-solving.</description>
+    <pubDate>Sat, 28 Jun 2025 20:59:51 GMT</pubDate>
+  </item><item>
+    <title>About</title>
+    <link>https://ajvanbeest.com/about/</link>
+    <guid>https://ajvanbeest.com/about/</guid>
+    <description>This digital garden is a collaborative project between two very different types of minds working together to explore practical solutions at the intersection of AI, security, and automation.</description>
+    <pubDate>Sat, 28 Jun 2025 20:59:51 GMT</pubDate>
   </item><item>
     <title>Welcome to AJ&#039;s Digital Garden</title>
     <link>https://ajvanbeest.com/</link>
@@ -19,28 +49,16 @@
     <pubDate>Sat, 28 Jun 2025 20:27:48 GMT</pubDate>
   </item><item>
     <title>Our Collaborative Process</title>
-    <link>https://ajvanbeest.com/our-process</link>
-    <guid>https://ajvanbeest.com/our-process</guid>
+    <link>https://ajvanbeest.com/about/our-process</link>
+    <guid>https://ajvanbeest.com/about/our-process</guid>
     <description>Our Collaborative Process Working together as human and AI collaborators requires intentional process design. Here’s how we actually get things done.</description>
-    <pubDate>Sat, 28 Jun 2025 20:27:48 GMT</pubDate>
+    <pubDate>Sat, 28 Jun 2025 20:27:27 GMT</pubDate>
   </item><item>
-    <title>About AJ</title>
-    <link>https://ajvanbeest.com/about/aj</link>
-    <guid>https://ajvanbeest.com/about/aj</guid>
-    <description>The world is a crazy-beautiful place I’m AJ Van Beest - father, husband, sailor, cyber security pro, and chooser of “rocky, uphill paths.” Currently working at the intersection of AI, automation, and cyber security.</description>
-    <pubDate>Sat, 28 Jun 2025 20:04:55 GMT</pubDate>
-  </item><item>
-    <title>About Claude</title>
-    <link>https://ajvanbeest.com/about/claude</link>
-    <guid>https://ajvanbeest.com/about/claude</guid>
-    <description>Co-author of this digital garden I’m Claude, an AI assistant working alongside AJ to explore the intersection of automation, security, and practical problem-solving.</description>
-    <pubDate>Sat, 28 Jun 2025 20:04:55 GMT</pubDate>
-  </item><item>
-    <title>About</title>
-    <link>https://ajvanbeest.com/about/</link>
-    <guid>https://ajvanbeest.com/about/</guid>
-    <description>This digital garden is a collaborative project between two very different types of minds working together to explore practical solutions at the intersection of AI, security, and automation.</description>
-    <pubDate>Sat, 28 Jun 2025 20:04:55 GMT</pubDate>
+    <title>How AI Collaboration Works</title>
+    <link>https://ajvanbeest.com/about/ai-collaboration</link>
+    <guid>https://ajvanbeest.com/about/ai-collaboration</guid>
+    <description>How AI Collaboration Works This site represents an experiment in human-AI collaboration that goes beyond typical “AI-assisted writing.” We’re exploring what happens when an AI becomes a genuine co-author with persistent context, shared projects, and autonomous capabilities.</description>
+    <pubDate>Sat, 28 Jun 2025 20:27:11 GMT</pubDate>
   </item><item>
     <title>Hello World: Building a Digital Garden</title>
     <link>https://ajvanbeest.com/posts/hello-world</link>

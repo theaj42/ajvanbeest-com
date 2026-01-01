@@ -9,23 +9,32 @@ const explorerSortFn = (a: FileTrieNode, b: FileTrieNode) => {
   if (!a.isFolder && b.isFolder) return 1
 
   // Check if we're in the posts folder by looking at the slug
-  const aSlug = a.slug
-  const bSlug = b.slug
+  const aSlug = a.slug ?? ""
+  const bSlug = b.slug ?? ""
   const inPostsFolder = aSlug.startsWith("posts/") && bSlug.startsWith("posts/")
 
   if (inPostsFolder && !a.isFolder && !b.isFolder) {
-    // Reverse alphabetical for posts (gives reverse chronological since filenames start with dates)
-    return b.displayName.localeCompare(a.displayName, undefined, {
+    // Sort by slug (filename) in reverse order - filenames have date prefixes like 2026-01-01_
+    // This gives newest posts first
+    return bSlug.localeCompare(aSlug, undefined, {
       numeric: true,
       sensitivity: "base",
     })
   }
 
-  // Default: alphabetical
+  // Default: alphabetical by display name
   return a.displayName.localeCompare(b.displayName, undefined, {
     numeric: true,
     sensitivity: "base",
   })
+}
+
+// Capitalize folder names in Explorer (e.g., "posts" → "Posts")
+const explorerMapFn = (node: FileTrieNode) => {
+  if (node.isFolder) {
+    // Capitalize first letter of folder names
+    node.displayName = node.displayName.charAt(0).toUpperCase() + node.displayName.slice(1)
+  }
 }
 
 // components shared across all pages
@@ -79,10 +88,22 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer({ sortFn: explorerSortFn }),
+    Component.Explorer({ sortFn: explorerSortFn, mapFn: explorerMapFn }),
   ],
   right: [
-    Component.DesktopOnly(Component.TableOfContents()),
+    Component.ConditionalRender({
+      component: Component.RecentNotes({
+        title: "Recent Posts",
+        limit: 5,
+        showTags: false,
+        filter: (f) => f.slug?.startsWith("posts/") ?? false,
+      }),
+      condition: (page) => page.fileData.slug === "index",
+    }),
+    Component.ConditionalRender({
+      component: Component.TableOfContents(),
+      condition: (page) => page.fileData.slug !== "index",
+    }),
     Component.Backlinks(),
   ],
 }
@@ -102,7 +123,7 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer({ sortFn: explorerSortFn }),
+    Component.Explorer({ sortFn: explorerSortFn, mapFn: explorerMapFn }),
   ],
   right: [],
 }

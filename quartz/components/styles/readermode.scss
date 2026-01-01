@@ -22,13 +22,72 @@
 }
 
 :root[reader-mode="on"] {
+  // Hide both sidebars completely
   & .sidebar.left,
   & .sidebar.right {
-    opacity: 0;
-    transition: opacity 0.2s ease;
+    display: none !important;
+  }
 
-    &:hover {
-      opacity: 1;
-    }
+  // Hide page header elements except breadcrumbs
+  & .page-header > *:not(.breadcrumb-container) {
+    display: none;
+  }
+
+  // Expand content to full width
+  & .page > #quartz-body {
+    display: block !important;
+    max-width: 750px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  // Center the main content
+  & .center {
+    max-width: 100% !important;
+    margin: 0 auto;
+  }
+
+  // Hide backlinks, comments, and other distractions
+  & .backlinks,
+  & #giscus-container,
+  & .graph,
+  & .toc,
+  & .recent-notes {
+    display: none !important;
+  }
+
+  // Keep breadcrumbs visible but styled minimally
+  & .breadcrumb-container {
+    margin-bottom: 1rem;
+  }
+
+}
+
+// Floating exit button (created dynamically by JS)
+.readermode-exit {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  background: var(--lightgray);
+  border: 1px solid var(--gray);
+  padding: 0.5rem;
+  border-radius: 5px;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--gray);
+  }
+
+  & svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--darkgray);
   }
 }

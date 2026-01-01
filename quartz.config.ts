@@ -24,31 +24,33 @@ const config: QuartzConfig = {
       cdnCaching: true,
       typography: {
         header: "Inter",
-        body: "Source Sans Pro",
-        code: "IBM Plex Mono",
+        body: "Source Serif Pro",
+        code: "JetBrains Mono",
       },
       colors: {
+        // Gruvbox Material Light (for accessibility/preference)
         lightMode: {
-          light: "#faf8f8",
-          lightgray: "#e5e5e5",
-          gray: "#b8b8b8",
-          darkgray: "#4e4e4e",
-          dark: "#2b2b2b",
-          secondary: "#284b63",
-          tertiary: "#84a59d",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#fff23688",
+          light: "#fbf1c7",           // bg0 (light)
+          lightgray: "#ebdbb2",       // bg1
+          gray: "#928374",            // gray
+          darkgray: "#504945",        // fg (dark text)
+          dark: "#282828",            // fg0 (headings)
+          secondary: "#af3a03",       // orange (burnt)
+          tertiary: "#427b58",        // aqua (muted)
+          highlight: "rgba(215, 153, 33, 0.15)",  // yellow highlight
+          textHighlight: "#d7992188", // yellow
         },
+        // Gruvbox Material Dark
         darkMode: {
-          light: "#1a1612",
-          lightgray: "#3d2b1f",
-          gray: "#6b5547",
-          darkgray: "#e8ddd4",
-          dark: "#f5f0eb",
-          secondary: "#a68b5b",
-          tertiary: "#8b7355",
-          highlight: "rgba(166, 139, 91, 0.15)",
-          textHighlight: "#d4af3788",
+          light: "#1d2021",           // bg0 (hard contrast)
+          lightgray: "#282828",       // bg1 (cards, borders)
+          gray: "#504945",            // bg3 (muted elements)
+          darkgray: "#d4be98",        // fg (main text - warm cream)
+          dark: "#ddc7a1",            // fg0 (headings - brighter cream)
+          secondary: "#e78a4e",       // orange (primary accent - links)
+          tertiary: "#89b482",        // aqua (secondary accent - hover)
+          highlight: "rgba(231, 138, 78, 0.15)",  // orange highlight
+          textHighlight: "#d8a65788", // yellow
         },
       },
     },
@@ -61,8 +63,8 @@ const config: QuartzConfig = {
       }),
       Plugin.SyntaxHighlighting({
         theme: {
-          light: "github-light",
-          dark: "github-dark",
+          light: "vitesse-light",
+          dark: "vitesse-dark",
         },
         keepBackground: false,
       }),
