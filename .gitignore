@@ -1,0 +1,8 @@
+node_modules/
+.DS_Store
+public/
+.quartz-cache/
+*.tsbuildinfo
+.env
+.env.*
+npm-debug.log*
