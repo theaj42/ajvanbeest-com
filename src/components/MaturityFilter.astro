@@ -19,12 +19,14 @@ const LABEL: Record<Maturity, string> = { seedling: 'Seedling', growing: 'Growin
 ---
 
 <nav class="pills" aria-label="Filter by maturity" data-maturity-filter>
-  <a href={`/${lane}/`} class="pill" data-filter="all" aria-current={active === 'all' ? 'page' : undefined}>All · {total}</a>
+  <a href={`/${lane}/`} class="pill" data-filter="all" aria-current={active === 'all' ? 'page' : undefined}>All · {total}</a>{' '}
   {order.map((m) => (
-    <a href={`/${lane}/maturity/${m}/`} class="pill" data-filter={m} aria-current={active === m ? 'page' : undefined}>
-      <MaturityMark maturity={m} />
-      <span>{LABEL[m]} · {counts[m]}</span>
-    </a>
+    <Fragment>
+      <a href={`/${lane}/maturity/${m}/`} class="pill" data-filter={m} aria-current={active === m ? 'page' : undefined}>
+        <MaturityMark maturity={m} />
+        <span>{LABEL[m]} · {counts[m]}</span>
+      </a>{' '}
+    </Fragment>
   ))}
 </nav>
 
