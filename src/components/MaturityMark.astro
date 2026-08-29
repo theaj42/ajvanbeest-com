@@ -1,0 +1,41 @@
+---
+/** The three maturity marks (INTERFACES §6), 12×12 viewBox, lifted from the canvas. */
+import type { Maturity } from '../lib/content';
+
+interface Props {
+  maturity: Maturity;
+  /** Render the text label next to the mark (default: mark only, with aria-label). */
+  label?: boolean;
+  class?: string;
+}
+const { maturity, label = false, class: cls } = Astro.props;
+const LABEL: Record<Maturity, string> = { seedling: 'Seedling', growing: 'Growing', evergreen: 'Evergreen' };
+const text = LABEL[maturity];
+---
+
+{label ? (
+  <span class:list={['mono', 'mark-label', cls]} data-maturity={maturity}>
+    {maturity === 'evergreen' && (
+      <svg class="mark" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="5" fill="var(--ever)"></circle></svg>
+    )}
+    {maturity === 'growing' && (
+      <svg class="mark" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="none" stroke="var(--grow)" stroke-width="1.5"></circle><path d="M6 1.5A4.5 4.5 0 0 1 6 10.5Z" fill="var(--grow)"></path></svg>
+    )}
+    {maturity === 'seedling' && (
+      <svg class="mark" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="none" stroke="var(--seed)" stroke-width="1.5"></circle></svg>
+    )}
+    <span>{text}</span>
+  </span>
+) : (
+  <>
+    {maturity === 'evergreen' && (
+      <svg class:list={['mark', cls]} viewBox="0 0 12 12" role="img" aria-label={text} data-maturity={maturity}><circle cx="6" cy="6" r="5" fill="var(--ever)"></circle></svg>
+    )}
+    {maturity === 'growing' && (
+      <svg class:list={['mark', cls]} viewBox="0 0 12 12" role="img" aria-label={text} data-maturity={maturity}><circle cx="6" cy="6" r="4.5" fill="none" stroke="var(--grow)" stroke-width="1.5"></circle><path d="M6 1.5A4.5 4.5 0 0 1 6 10.5Z" fill="var(--grow)"></path></svg>
+    )}
+    {maturity === 'seedling' && (
+      <svg class:list={['mark', cls]} viewBox="0 0 12 12" role="img" aria-label={text} data-maturity={maturity}><circle cx="6" cy="6" r="4.5" fill="none" stroke="var(--seed)" stroke-width="1.5"></circle></svg>
+    )}
+  </>
+)}

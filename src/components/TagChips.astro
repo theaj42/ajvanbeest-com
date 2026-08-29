@@ -1,0 +1,17 @@
+---
+/** Row of tag chips linking to /tags/<tag>/. */
+interface Props { tags: string[]; class?: string }
+const { tags, class: cls } = Astro.props;
+---
+
+{tags.length > 0 && (
+  <ul class:list={['tag-row', 'tag-list', cls]} aria-label="Tags">
+    {tags.map((t) => (
+      <li><a href={`/tags/${t}/`} class="tag">{t}</a></li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .tag-list { list-style: none; margin: 0; padding: 0; }
+</style>

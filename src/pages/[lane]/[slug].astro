@@ -1,0 +1,160 @@
+---
+/** Entry page (SPEC B5, Post artboard). */
+import Base from '../../layouts/Base.astro';
+import MaturityMark from '../../components/MaturityMark.astro';
+import TagChips from '../../components/TagChips.astro';
+import Toc from '../../components/Toc.astro';
+import { LANES, LANE_LABEL, getEntries, getBacklinks, formatDate, type Entry, type Lane } from '../../lib/content';
+import { getAlternates } from '../../lib/alternates';
+
+interface Props { entry: Entry; newer?: Entry; older?: Entry }
+
+export async function getStaticPaths() {
+  const paths: { params: { lane: Lane; slug: string }; props: Props }[] = [];
+  for (const lane of LANES) {
+    const entries = await getEntries(lane);
+    entries.forEach((entry, i) => {
+      // "Next" = the next-newer entry (list is newest first); the newest entry links to the previous one.
+      const newer = i > 0 ? entries[i - 1] : undefined;
+      const older = i < entries.length - 1 ? entries[i + 1] : undefined;
+      paths.push({ params: { lane, slug: entry.slug }, props: { entry, newer, older } });
+    });
+  }
+  return paths;
+}
+
+const { entry, newer, older } = Astro.props;
+const lane = entry.lane as Lane;
+const { Content, headings } = await entry.render();
+const backlinks = await getBacklinks(entry);
+const next = newer ?? older;
+const nextLabel = newer ? 'Next' : 'Previous';
+const mdHref = `/${lane}/${entry.slug}.md`;
+const jsonHref = `/${lane}/${entry.slug}.json`;
+const STATUS: Record<string, string> = { live: 'Live', 'in-progress': 'In progress', private: 'Private, for now', archived: 'Archived' };
+const alternates = getAlternates({ kind: 'entry', entry });
+---
+
+<Base title={entry.title} description={entry.description} alternates={alternates} ogImage={`/og/${lane}/${entry.slug}.png`} kind="entry" compactFooter>
+  <div class="container page">
+    <article class="article">
+      <header class="head">
+        <nav class="crumb" aria-label="Breadcrumb">
+          <a href={`/${lane}/`} class="mono lane">{LANE_LABEL[lane]}</a>
+          {entry.tags[0] && (
+            <>
+              <span class="mono" aria-hidden="true">/</span>
+              <a href={`/tags/${entry.tags[0]}/`} class="mono">{entry.tags[0]}</a>
+            </>
+          )}
+        </nav>
+        <h1 class="h-display title">{entry.title}</h1>
+        {entry.subtitle && <p class="subtitle">{entry.subtitle}</p>}
+        <div class="meta">
+          <MaturityMark maturity={entry.maturity} label />
+          <span class="mono"><time datetime={entry.date.toISOString().slice(0, 10)}>{formatDate(entry.date)}</time></span>
+          <span class="mono">{entry.readingMinutes} min read</span>
+          {entry.updated && <span class="mono">Updated <time datetime={entry.updated.toISOString().slice(0, 10)}>{formatDate(entry.updated)}</time></span>}
+          {entry.status && <span class:list={['mono', 'status', entry.status]}>{STATUS[entry.status]}</span>}
+          {entry.externalUrl && <a href={entry.externalUrl} class="mono ext">{entry.externalUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')} ↗</a>}
+        </div>
+        <TagChips tags={entry.tags} />
+      </header>
+
+      <div class="body">
+        <Content />
+      </div>
+
+      <footer class="tail">
+        <div class="tail-row">
+          <div class="as">
+            <span class="mono">This page as</span>
+            <a href={mdHref} class="tag as-link">markdown</a>
+            <a href={jsonHref} class="tag as-link">json</a>
+          </div>
+          {next && <a href={next.url} class="mono next">{nextLabel}: {next.title} →</a>}
+        </div>
+        <section class="comments" aria-labelledby="comments-title">
+          <h2 id="comments-title" class="comments-title">Comments</h2>
+          <div class="giscus" data-giscus-host></div>
+          <noscript><p class="muted comments-noscript">Comments are powered by Giscus (GitHub Discussions) and need JavaScript to load.</p></noscript>
+        </section>
+        <script is:inline>
+          // Giscus (INTERFACES §11). Injected so the initial theme matches the site theme;
+          // the toggle then re-themes the iframe without a reload.
+          (function () {
+            var host = document.querySelector('[data-giscus-host]');
+            if (!host) return;
+            var theme = function () { return document.documentElement.dataset.theme === 'dark' ? 'dark_dimmed' : 'light'; };
+            var s = document.createElement('script');
+            s.src = 'https://giscus.app/client.js';
+            s.async = true;
+            s.crossOrigin = 'anonymous';
+            var attrs = {
+              'data-repo': 'theaj42/ajvanbeest-com',
+              'data-repo-id': 'R_kgDOPDfIhA',
+              'data-category': 'General',
+              'data-category-id': 'DIC_kwDOPDfIhM4CsKiS',
+              'data-mapping': 'pathname',
+              'data-strict': '0',
+              'data-reactions-enabled': '1',
+              'data-emit-metadata': '0',
+              'data-input-position': 'bottom',
+              'data-theme': theme(),
+              'data-lang': 'en',
+            };
+            for (var k in attrs) s.setAttribute(k, attrs[k]);
+            host.appendChild(s);
+            document.addEventListener('themechange', function () {
+              var frame = document.querySelector('iframe.giscus-frame');
+              if (frame && frame.contentWindow) {
+                frame.contentWindow.postMessage({ giscus: { setConfig: { theme: theme() } } }, 'https://giscus.app');
+              }
+            });
+          })();
+        </script>
+
+      </footer>
+    </article>
+
+    <Toc headings={headings} backlinks={backlinks} />
+  </div>
+</Base>
+
+<style>
+  .page { display: grid; grid-template-columns: 720px 240px; gap: 96px; padding-top: 72px; padding-bottom: 80px; }
+  .article { display: flex; flex-direction: column; min-width: 0; }
+  .head { display: flex; flex-direction: column; gap: 18px; padding-bottom: 36px; border-bottom: 1px solid var(--line); }
+  .crumb { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .crumb .lane { color: var(--accent); }
+  .title { font-size: 56px; line-height: 1.05; font-weight: 500; overflow-wrap: anywhere; }
+  .subtitle { margin: 0; font-family: var(--display); font-style: italic; font-size: 26px; line-height: 1.25; color: var(--fg-muted); }
+  .meta { display: flex; align-items: center; gap: 22px; margin-top: 6px; flex-wrap: wrap; }
+  .status.live { color: var(--accent-2); }
+  .status.in-progress { color: var(--grow); }
+  .ext { color: var(--accent); text-transform: none; letter-spacing: 0.02em; }
+  .body { padding-top: 36px; }
+  .tail { display: flex; flex-direction: column; gap: 28px; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--line); }
+  .tail-row { display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; }
+  .as { display: flex; align-items: center; gap: 16px; }
+  .as-link { color: var(--accent); border-color: var(--accent); }
+  .next { color: var(--accent); text-align: right; }
+  .comments { display: flex; flex-direction: column; gap: 14px; }
+  .comments-title { margin: 0; font-family: var(--display); font-weight: 500; font-size: 22px; color: var(--heading); }
+  .comments-noscript { margin: 0; font-size: 15px; }
+  .giscus:empty { display: none; }
+
+  @media (max-width: 999px) {
+    .page { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  }
+  @media (max-width: 640px) {
+    .page { padding-top: 36px; padding-bottom: 40px; }
+    .head { gap: 14px; padding-bottom: 24px; }
+    .title { font-size: 36px; }
+    .subtitle { font-size: 21px; }
+    .meta { gap: 12px 18px; }
+    .body { padding-top: 24px; }
+    .tail { margin-top: 36px; }
+    .next { text-align: left; }
+  }
+</style>

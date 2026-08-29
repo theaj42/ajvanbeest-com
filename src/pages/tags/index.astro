@@ -1,0 +1,31 @@
+---
+/** `/tags/` — every tag with its count, alphabetical. */
+import Base from '../../layouts/Base.astro';
+import { getAllTags } from '../../lib/content';
+import { getAlternates } from '../../lib/alternates';
+
+const tags = await getAllTags();
+---
+
+<Base title="Tags" description="Every tag on ajvanbeest.com, with counts." alternates={getAlternates({ kind: 'site' })}>
+  <div class="container page">
+    <header class="page-head">
+      <h1 class="h-display">Tags</h1>
+      <p class="intro">{tags.length} tags across every lane.</p>
+    </header>
+    <ul class="tags">
+      {tags.map((t) => (
+        <li><a href={`/tags/${t.tag}/`} class="tag-big"><span>{t.tag}</span><span class="mono count">{t.count}</span></a></li>
+      ))}
+    </ul>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 72px; padding-bottom: 80px; display: flex; flex-direction: column; gap: 36px; }
+  .tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; border-top: 1px solid var(--line); padding-top: 28px; }
+  .tag-big { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 3px; font-family: var(--mono); font-size: 13px; letter-spacing: 0.05em; color: var(--fg); }
+  .tag-big:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+  .count { font-size: 11px; }
+  @media (max-width: 640px) { .page { padding-top: 36px; padding-bottom: 40px; gap: 24px; } }
+</style>

@@ -1,0 +1,74 @@
+---
+/** Right column of the entry page: "On this page" (h2/h3) + "Linked from" backlinks when any exist. Sticky at desktop. */
+import type { Entry } from '../lib/content';
+
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+  backlinks: Entry[];
+}
+const { headings, backlinks } = Astro.props;
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{(items.length > 0 || backlinks.length > 0) && (
+  <aside class="toc" data-toc>
+    {items.length > 0 && (
+      <nav aria-labelledby="toc-title">
+        <h2 id="toc-title" class="mono head">On this page</h2>
+        <ol class="list">
+          {items.map((h) => (
+            <li class:list={{ sub: h.depth === 3 }}><a href={`#${h.slug}`} data-toc-link={h.slug}>{h.text}</a></li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    {backlinks.length > 0 && (
+      <nav aria-labelledby="backlinks-title">
+        {items.length > 0 && <div class="rule sep"></div>}
+        <h2 id="backlinks-title" class="mono head">Linked from</h2>
+        <ol class="list">
+          {backlinks.map((b) => (
+            <li><a href={b.url}>{b.title}</a></li>
+          ))}
+        </ol>
+      </nav>
+    )}
+  </aside>
+)}
+
+<style>
+  .toc { display: flex; flex-direction: column; padding-top: 8px; position: sticky; top: 24px; align-self: start; }
+  .head { font-weight: 400; color: var(--heading); margin: 0 0 16px; }
+  .list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .list .sub { padding-left: 14px; }
+  .sep { margin: 26px 0 18px; background: var(--line-soft); }
+  @media (max-width: 999px) {
+    .toc { position: static; padding-top: 40px; }
+  }
+</style>
+
+<script>
+  // Highlight the heading currently in view (progressive enhancement only).
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+  if (links.length && 'IntersectionObserver' in window) {
+    const map = new Map<string, HTMLAnchorElement>();
+    links.forEach((a) => map.set(a.dataset.tocLink!, a));
+    const targets = [...map.keys()].map((id) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+    let current: HTMLAnchorElement | undefined;
+    const set = (id: string) => {
+      const a = map.get(id);
+      if (!a || a === current) return;
+      current?.removeAttribute('aria-current');
+      a.setAttribute('aria-current', 'true');
+      current = a;
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) set(visible[0].target.id);
+      },
+      { rootMargin: '0px 0px -70% 0px', threshold: 0 },
+    );
+    targets.forEach((t) => io.observe(t));
+  }
+</script>

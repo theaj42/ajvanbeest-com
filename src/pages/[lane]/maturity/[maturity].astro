@@ -1,0 +1,23 @@
+---
+/** `/<lane>/maturity/<m>/` — the static, no-JS filtered view of a lane index (SPEC B4 scenario 7). */
+import Base from '../../../layouts/Base.astro';
+import LaneIndex from '../../../components/LaneIndex.astro';
+import { LANES, LANE_LABEL, getEntries, type Lane, type Maturity } from '../../../lib/content';
+import { getAlternates } from '../../../lib/alternates';
+
+export function getStaticPaths() {
+  const maturities: Maturity[] = ['seedling', 'growing', 'evergreen'];
+  return LANES.flatMap((lane) => maturities.map((maturity) => ({ params: { lane, maturity } })));
+}
+const lane = Astro.params.lane as Lane;
+const maturity = Astro.params.maturity as Maturity;
+let entries = await getEntries(lane);
+if (lane === 'projects') {
+  entries = [...entries].sort((a, b) => (a.featured ?? 99) - (b.featured ?? 99) || b.date.getTime() - a.date.getTime());
+}
+const label = maturity.charAt(0).toUpperCase() + maturity.slice(1);
+---
+
+<Base title={`${label} · ${LANE_LABEL[lane]}`} description={`${label} entries in ${LANE_LABEL[lane]}.`} alternates={getAlternates({ kind: 'lane', lane })} ogImage={`/og/${lane}.png`} kind="lane">
+  <LaneIndex lane={lane} all={entries} active={maturity} />
+</Base>

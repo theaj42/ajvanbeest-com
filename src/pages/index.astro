@@ -1,30 +1,119 @@
 ---
-// Placeholder — replaced by P2. Proves the four collections load through src/lib/content.ts.
+/** Home (SPEC B3, Main + MobileHome artboards). */
 import Base from '../layouts/Base.astro';
-import { LANES, LANE_LABEL, getEntries, formatDate } from '../lib/content';
+import ProjectCard from '../components/ProjectCard.astro';
+import EntryRow from '../components/EntryRow.astro';
+import MaturityMark from '../components/MaturityMark.astro';
+import { LANES, LANE_LABEL, getFeatured, getSelectedWriting, getGardenLatest } from '../lib/content';
+import { getAlternates } from '../lib/alternates';
 
-const counts = await Promise.all(
-  LANES.map(async (lane) => ({ lane, entries: await getEntries(lane) })),
-);
+const featured = await getFeatured();
+const selected = await getSelectedWriting();
+const garden = await getGardenLatest(4);
+const alternates = getAlternates({ kind: 'site' });
 ---
 
-<Base title="AJ Van Beest">
-  <main>
-    <h1>AJ Van Beest</h1>
-    <p>I build robots to fight cybercrime.</p>
-    <ul>
-      {counts.map(({ lane, entries }) => (
-        <li>
-          <strong>{LANE_LABEL[lane]}</strong>: {entries.length}
-          <ul>
-            {entries.map((e) => (
-              <li>
-                {formatDate(e.date)} · {e.maturity} · {e.title}
-              </li>
-            ))}
-          </ul>
-        </li>
-      ))}
-    </ul>
-  </main>
+<Base title="AJ Van Beest" description="I build robots to fight cybercrime. Writing, projects, notes, and playbooks on security automation and agentic systems." alternates={alternates} ogImage="/og/index.png" kind="site">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero-inner">
+      <h1 id="hero-title" class="h-display hero-title">I build robots to fight cybercrime.</h1>
+      <p class="hero-bio">[BIO SENTENCE — AJ]</p>
+      <div class="hero-links">
+        <a href="/about/" class="hero-link">More about me <svg class="icon arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+        <a href="/rss.xml" class="hero-link muted">Subscribe via RSS</a>
+      </div>
+    </div>
+  </section>
+
+  <nav class="lane-strip" aria-label="Lanes">
+    {LANES.map((l) => <a href={`/${l}/`} class="nav-link">{LANE_LABEL[l]}</a>)}
+  </nav>
+
+  {featured.length > 0 && (
+    <section class="container section" aria-labelledby="featured-title">
+      <div class="section-head">
+        <h2 id="featured-title" class="h-section">Featured projects</h2>
+        <a href="/projects/" class="mono section-link">All<span class="section-link-long"> projects</span> →</a>
+      </div>
+      <div class="cards">
+        {featured.map((p) => <ProjectCard entry={p} />)}
+      </div>
+    </section>
+  )}
+
+  {selected.length > 0 && (
+    <section class="container section" aria-labelledby="writing-title">
+      <div class="section-head">
+        <h2 id="writing-title" class="h-section">Selected writing</h2>
+        <a href="/writing/" class="mono section-link">All<span class="section-link-long"> writing</span> →</a>
+      </div>
+      <div class="rows">
+        {selected.map((e, i) => <EntryRow entry={e} showSubtitle headingLevel="h3" last={i === selected.length - 1} />)}
+      </div>
+    </section>
+  )}
+
+  {garden.length > 0 && (
+    <section class="container section garden" aria-labelledby="garden-title">
+      <div class="section-head">
+        <div class="section-head-group">
+          <h2 id="garden-title" class="h-section">From the garden</h2>
+          <span class="lede">Notes are half-formed by design.</span>
+        </div>
+        <a href="/notes/" class="mono section-link">All<span class="section-link-long"> notes</span> →</a>
+      </div>
+      <ul class="garden-list">
+        {garden.map((n) => (
+          <li><a href={n.url} class="garden-row"><MaturityMark maturity={n.maturity} /><span class="garden-title">{n.title}</span></a></li>
+        ))}
+      </ul>
+      <div class="legend" aria-label="Maturity legend">
+        <span class="mono mark-label"><MaturityMark maturity="seedling" />Seedling · rough</span>
+        <span class="mono mark-label"><MaturityMark maturity="growing" />Growing · revised</span>
+        <span class="mono mark-label"><MaturityMark maturity="evergreen" />Evergreen · I stand behind it</span>
+      </div>
+    </section>
+  )}
+  <div class="tail"></div>
 </Base>
+
+<style>
+  .hero { background: var(--bg-hero); border-bottom: 1px solid var(--line-soft); }
+  .hero-inner { display: flex; flex-direction: column; gap: 28px; padding-top: 96px; padding-bottom: 88px; }
+  .hero-title { font-size: 84px; line-height: 1.02; font-style: italic; font-weight: 400; max-width: 900px; }
+  .hero-bio { font-size: 22px; line-height: 1.45; max-width: 640px; margin: 0; color: var(--fg); }
+  .hero-links { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+  .hero-link { font-family: var(--mono); font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+  .hero-link.muted { color: var(--fg-muted); }
+  .hero-link.muted:hover { color: var(--accent); }
+  .arrow { width: 14px; height: 14px; }
+  .lane-strip { display: none; }
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding-top: 24px; }
+  .rows { display: flex; flex-direction: column; }
+  .section-head-group { display: flex; align-items: baseline; gap: 20px; }
+  .garden-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; }
+  .garden-row { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line-soft); color: var(--fg); }
+  .garden-row:hover { color: var(--accent); text-decoration: none; }
+  .garden-title { flex-grow: 1; font-size: 17px; }
+  .legend { display: flex; gap: 28px; padding-top: 18px; flex-wrap: wrap; }
+  .tail { height: 96px; }
+
+  @media (max-width: 640px) {
+    .hero-inner { gap: 18px; padding-top: 44px; padding-bottom: 40px; }
+    .hero-title { font-size: 42px; line-height: 1.05; }
+    .hero-bio { font-size: 17px; line-height: 1.5; }
+    .hero-link { font-size: 12px; }
+    .lane-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid var(--line-soft); }
+    .lane-strip a { display: flex; align-items: center; justify-content: center; min-height: 48px; font-size: 11px; border-right: 1px solid var(--line-soft); text-align: center; }
+    .lane-strip a:last-child { border-right: 0; }
+    .cards { grid-template-columns: 1fr; gap: 12px; padding-top: 12px; }
+    .garden-list { grid-template-columns: 1fr; column-gap: 0; }
+    .garden-row { min-height: 48px; padding: 0; gap: 12px; }
+    .garden-title { font-size: 16px; }
+    .legend { gap: 14px 20px; padding-top: 14px; }
+    .tail { height: 40px; }
+  }
+  @media (min-width: 641px) and (max-width: 900px) {
+    .cards { grid-template-columns: 1fr 1fr; }
+  }
+</style>

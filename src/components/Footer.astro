@@ -1,0 +1,83 @@
+---
+/** Footer. Full (three columns, Main artboard) by default; `compact` is the one-row footer from the Post artboard. */
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+const copyright = '© 2026 AJ Van Beest. Written by a human, built with help.';
+---
+
+<footer class="site-footer">
+  {compact ? (
+    <div class="container footer-compact">
+      <span class="copy">{copyright}</span>
+      <div class="links">
+        <a href="/rss.xml" class="mono">RSS</a>
+        <a href="/llms.txt" class="mono">/llms.txt</a>
+        <a href="https://github.com/theaj42" class="mono">GitHub</a>
+      </div>
+    </div>
+  ) : (
+    <>
+      <div class="container footer-full">
+        <div class="col">
+          <span class="mono head">For humans</span>
+          <a href="/rss.xml">RSS feed</a>
+          <a href="/tags/">All tags</a>
+          <a href="#search">Search</a>
+        </div>
+        <div class="col">
+          <span class="mono head">For agents</span>
+          <a href="/llms.txt" class="code">/llms.txt</a>
+          <a href="/feed.json" class="code">/feed.json</a>
+          <span class="note">Append <code>.md</code> or <code>.json</code> to any URL for the source.</span>
+        </div>
+        <div class="col">
+          <span class="mono head">Elsewhere</span>
+          <a href="https://github.com/theaj42">GitHub</a>
+          <span class="placeholder">[LINKEDIN / MASTODON]</span>
+          <span class="copy">{copyright}</span>
+        </div>
+      </div>
+      <div class="container footer-mobile">
+        <div class="links">
+          <a href="/rss.xml" class="mono">RSS</a>
+          <a href="/llms.txt" class="mono">/llms.txt</a>
+          <a href="/feed.json" class="mono">/feed.json</a>
+          <a href="/tags/" class="mono">Tags</a>
+          <a href="https://github.com/theaj42" class="mono">GitHub</a>
+        </div>
+        <span class="copy">{copyright}</span>
+      </div>
+    </>
+  )}
+</footer>
+
+<style>
+  .site-footer { margin-top: auto; border-top: 1px solid var(--line); background: var(--bg-soft); }
+  .footer-full { padding-top: 48px; padding-bottom: 40px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+  .col { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .col a { color: var(--fg); font-size: 15px; }
+  .col a:hover { color: var(--accent); }
+  .head { color: var(--heading); }
+  .code { font-family: var(--mono); font-size: 13px !important; }
+  .note { color: var(--fg-muted); font-size: 14px; }
+  .note code { font-family: var(--mono); font-size: 12px; }
+  .placeholder { color: var(--fg); font-size: 15px; }
+  .copy { color: var(--fg-muted); font-size: 14px; }
+  .footer-full .copy { margin-top: 10px; }
+  .footer-mobile { display: none; }
+  .footer-compact { padding-top: 32px; padding-bottom: 32px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .links { display: flex; gap: 24px; flex-wrap: wrap; }
+  .links a { display: inline-flex; align-items: center; min-height: 32px; }
+
+  @media (max-width: 640px) {
+    .footer-full { display: none; }
+    .footer-mobile { display: flex; flex-direction: column; gap: 14px; padding-top: 28px; padding-bottom: 28px; }
+    .footer-mobile .links { gap: 20px; }
+    .footer-mobile .copy, .footer-compact .copy { font-size: 13px; }
+    .footer-compact { padding-top: 28px; padding-bottom: 28px; flex-direction: column-reverse; align-items: flex-start; gap: 14px; }
+  }
+  @media (pointer: coarse) {
+    .col a { min-height: 32px; display: inline-flex; align-items: center; }
+    .links a { min-height: 44px; }
+  }
+</style>

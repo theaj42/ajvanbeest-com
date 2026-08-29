@@ -1,0 +1,22 @@
+---
+/** `/about/` — copy is AJ's to write (SPEC B2: placeholder until then). */
+import Base from '../layouts/Base.astro';
+import { getAlternates } from '../lib/alternates';
+---
+
+<Base title="About" description="About AJ Van Beest." alternates={getAlternates({ kind: 'site' })}>
+  <div class="container page">
+    <header class="page-head">
+      <h1 class="h-display">About</h1>
+    </header>
+    <div class="body prose">
+      <p>[ABOUT COPY — AJ]</p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 72px; padding-bottom: 80px; display: flex; flex-direction: column; gap: 36px; }
+  .prose { max-width: 720px; }
+  @media (max-width: 640px) { .page { padding-top: 36px; padding-bottom: 40px; gap: 24px; } }
+</style>
