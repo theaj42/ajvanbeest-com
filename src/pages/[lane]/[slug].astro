@@ -37,7 +37,7 @@ const alternates = getAlternates({ kind: 'entry', entry });
 
 <Base title={entry.title} description={entry.description} alternates={alternates} ogImage={`/og/${lane}/${entry.slug}.png`} kind="entry" compactFooter>
   <div class="container page">
-    <article class="article">
+    <article class="article" data-pagefind-body data-pagefind-meta="lane[data-lane], maturity[data-maturity]" data-lane={lane} data-maturity={entry.maturity}>
       <header class="head">
         <nav class="crumb" aria-label="Breadcrumb">
           <a href={`/${lane}/`} class="mono lane">{LANE_LABEL[lane]}</a>
