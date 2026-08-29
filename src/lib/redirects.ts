@@ -39,7 +39,7 @@ const FALLBACK_LEGACY: Redirect[] = [
 ];
 
 /** Paths whose redirect is emitted by another packet as a real file (P3 owns `/index.xml`). */
-const HANDLED_ELSEWHERE = new Set<string>([]); // /index.xml is now a redirect page like the others (integration decision)
+const HANDLED_ELSEWHERE = new Set<string>(['/index.xml']); // P3 emits dist/index.xml itself (a real file; static hosts type .xml by extension)
 
 const MATURITIES = ['seedling', 'growing', 'evergreen'];
 

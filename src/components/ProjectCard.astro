@@ -10,8 +10,8 @@ const status = entry.status ?? 'in-progress';
 ---
 
 <a href={entry.url} class="card project-card">
-  <p class:list={['mono', 'status', status]}>{STATUS[status]}</p>
-  <Heading class="title">{entry.title}</Heading>
+  <p class:list={['mono', 'status', status]}>{STATUS[status]}</p>{' '}
+  <Heading class="title">{entry.title}</Heading>{' '}
   {entry.description && <p class="desc">{entry.description}</p>}
 </a>
 
