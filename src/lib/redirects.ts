@@ -149,6 +149,7 @@ async function build(): Promise<Redirect[]> {
   if (legacy) {
     const missing: string[] = [];
     for (const row of legacy) {
+      if (HANDLED_ELSEWHERE.has(row.from)) continue; // another packet emits this file
       if (row.to) add(row.from, row.to, `${LEGACY_FILE}:${row.line}`);
       else if (!table.has(row.from)) missing.push(`${LEGACY_FILE}:${row.line}: ${row.from}`);
     }
