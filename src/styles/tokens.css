@@ -5,8 +5,8 @@
   --bg:#f9f5d7; --bg-soft:#f2e5bc; --bg-hero:#fbf1c7;
   --line:#d5c4a1; --line-soft:#e8dcb5;
   --fg:#4f3829; --fg-muted:#665c54; --heading:#3c3836;
-  --accent:#af3a03; --accent-hover:#8a2e02; --accent-2:#427b58;
-  --seed:#79740e; --grow:#b57614; --ever:#427b58;
+  --accent:#af3a03; --accent-hover:#8a2e02; --accent-2:#3d7050;
+  --seed:#79740e; --grow:#8a5b05; --ever:#427b58;
 }
 :root[data-theme="dark"] {
   --bg:#1d2021; --bg-soft:#282828; --bg-hero:#1d2021;

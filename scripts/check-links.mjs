@@ -149,3 +149,66 @@ if (failed) process.exit(1);
 console.log(
   `check-links: ${htmlFiles.length} html files, ${drafts.length} draft title(s) checked across ${scanFiles.length} outputs — OK`,
 );
+
+
+// ---------------------------------------------------------------------------
+// Wikilinks (SPEC B2/B10: "resolve or fail the build — no silent dead links").
+// Astro 7's Sätteri markdown engine renders [[wikilinks]] as literal text, so a
+// wikilink in source would ship as a silent non-link. The build therefore fails on
+// any [[wikilink]] outside code, naming the file and — when the target matches an
+// entry's slug, file stem, or title — the markdown link to use instead.
+// ---------------------------------------------------------------------------
+{
+  const fsW = await import('node:fs');
+  const pathW = await import('node:path');
+  const LANES_W = ['writing', 'projects', 'notes', 'playbooks'];
+  const root = pathW.join(process.cwd(), 'src', 'content');
+  const index = new Map();
+  const files = [];
+  for (const lane of LANES_W) {
+    const dir = pathW.join(root, lane);
+    if (!fsW.existsSync(dir)) continue;
+    for (const f of fsW.readdirSync(dir)) {
+      if (!f.endsWith('.md')) continue;
+      const stem = f.slice(0, -3);
+      const src = fsW.readFileSync(pathW.join(dir, f), 'utf8');
+      const fm = src.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+      let slug = stem;
+      let title = null;
+      if (fm) {
+        const sm = fm[1].match(/^slug:\s*["']?([^"'\n]+?)["']?\s*$/m);
+        if (sm) slug = sm[1].trim();
+        const tm = fm[1].match(/^title:\s*["']?(.*?)["']?\s*$/m);
+        if (tm) title = tm[1].trim();
+      }
+      const url = `/${lane}/${slug}/`;
+      index.set(slug.toLowerCase(), url);
+      index.set(stem.toLowerCase(), url);
+      if (title) index.set(title.toLowerCase(), url);
+      files.push({ rel: pathW.join('src', 'content', lane, f), src, fm: fm ? fm[0].length : 0 });
+    }
+  }
+  const WIKILINK = /\[\[([^\[\]|#]+?)(?:#[^\[\]|]*)?(?:\|([^\[\]]+))?\]\]/g;
+  const problems = [];
+  for (const { rel, src, fm } of files) {
+    // Drop fenced code blocks and inline code before scanning.
+    const body = src.slice(fm).replace(/```[\s\S]*?```/g, '').replace(/~~~[\s\S]*?~~~/g, '').replace(/`[^`\n]*`/g, '');
+    let m;
+    WIKILINK.lastIndex = 0;
+    while ((m = WIKILINK.exec(body))) {
+      const target = m[1].trim();
+      const label = (m[2] || m[1]).trim();
+      const url = index.get(target.toLowerCase());
+      problems.push(
+        url
+          ? `${rel}: wikilink [[${target}]] is not rendered as a link — replace it with [${label}](${url})`
+          : `${rel}: unresolved wikilink [[${target}]] — no entry has that slug or title; link to /<lane>/<slug>/ instead`,
+      );
+    }
+  }
+  if (problems.length) {
+    console.error(`check-links: ${problems.length} wikilink(s) in source would ship as dead text:\n  ${problems.join('\n  ')}`);
+    process.exit(1);
+  }
+  console.log(`check-links: wikilinks — ${files.length} source files scanned, none outside code — OK`);
+}

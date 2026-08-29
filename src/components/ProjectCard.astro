@@ -10,12 +10,13 @@ const status = entry.status ?? 'in-progress';
 ---
 
 <a href={entry.url} class="card project-card">
-  <span class:list={['mono', 'status', status]}>{STATUS[status]}</span>
+  <p class:list={['mono', 'status', status]}>{STATUS[status]}</p>
   <Heading class="title">{entry.title}</Heading>
-  {entry.description && <span class="desc">{entry.description}</span>}
+  {entry.description && <p class="desc">{entry.description}</p>}
 </a>
 
 <style>
+  .project-card p { margin: 0; }
   .project-card { display: flex; flex-direction: column; gap: 12px; padding: 24px; color: var(--fg); min-height: 150px; }
   .project-card:hover { text-decoration: none; border-color: var(--line); }
   .project-card:hover .title { color: var(--accent); }

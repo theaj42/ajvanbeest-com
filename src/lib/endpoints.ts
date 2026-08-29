@@ -273,7 +273,9 @@ export async function lanesWithEntries(): Promise<{ lane: Lane; entries: Entry[]
 
 export async function llmsTxt(): Promise<string> {
   const lines = [`# ${SITE_TITLE} — ajvanbeest.com`, `> ${SITE_DESCRIPTION}`, ''];
-  for (const { lane, entries } of await lanesWithEntries()) {
+  const byLane = new Map((await lanesWithEntries()).map((l) => [l.lane, l.entries] as const));
+  for (const lane of LANES) {
+    const entries = byLane.get(lane) ?? []; // spec B6: one H2 per lane, even when nothing is published yet
     lines.push(`## ${LANE_LABEL[lane]}`);
     for (const e of entries) {
       const desc = e.description ? `: ${e.description.replace(/\s+/g, ' ').trim()}` : '';

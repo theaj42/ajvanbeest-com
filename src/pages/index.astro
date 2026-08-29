@@ -53,7 +53,6 @@ const alternates = getAlternates({ kind: 'site' });
     </section>
   )}
 
-  {garden.length > 0 && (
     <section class="container section garden" aria-labelledby="garden-title">
       <div class="section-head">
         <div class="section-head-group">
@@ -62,18 +61,21 @@ const alternates = getAlternates({ kind: 'site' });
         </div>
         <a href="/notes/" class="mono section-link">All<span class="section-link-long"> notes</span> →</a>
       </div>
+      {garden.length > 0 ? (
       <ul class="garden-list">
         {garden.map((n) => (
           <li><a href={n.url} class="garden-row"><MaturityMark maturity={n.maturity} /><span class="garden-title">{n.title}</span></a></li>
         ))}
       </ul>
+      ) : (
+        <p class="garden-empty">Nothing published here yet.</p>
+      )}
       <div class="legend" aria-label="Maturity legend">
         <span class="mono mark-label"><MaturityMark maturity="seedling" />Seedling · rough</span>
         <span class="mono mark-label"><MaturityMark maturity="growing" />Growing · revised</span>
         <span class="mono mark-label"><MaturityMark maturity="evergreen" />Evergreen · I stand behind it</span>
       </div>
     </section>
-  )}
   <div class="tail"></div>
 </Base>
 
@@ -91,6 +93,7 @@ const alternates = getAlternates({ kind: 'site' });
   .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding-top: 24px; }
   .rows { display: flex; flex-direction: column; }
   .section-head-group { display: flex; align-items: baseline; gap: 20px; }
+  .garden-empty { margin: 0; padding: 16px 0; color: var(--fg-muted); font-style: italic; }
   .garden-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; }
   .garden-row { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--line-soft); color: var(--fg); }
   .garden-row:hover { color: var(--accent); text-decoration: none; }
