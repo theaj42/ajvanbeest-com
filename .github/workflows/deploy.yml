@@ -1,0 +1,65 @@
+# Build and deploy ajvanbeest.com (Astro) to GitHub Pages — SPEC B10.
+#
+# - push to main      → build, then deploy
+# - pull_request      → build only (a green check; nothing is deployed)
+# - workflow_dispatch → build, then deploy
+#
+# The acceptance gate (`npm run gate`, scripts/gate.sh) is NOT run here: it
+# needs Playwright browsers and Lighthouse and is run by the evaluator against
+# a served dist/. CI only proves the site builds (schema, links, drafts, and
+# the Pagefind index are all checked inside `npm run build`).
+
+name: Deploy site to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Upload dist/ as the Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    # PRs get the build check above and nothing else.
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    # One deployment at a time; never cancel an in-flight one.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
