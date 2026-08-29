@@ -1,0 +1,26 @@
+---
+/** `/<lane>/` — every non-draft entry in the lane (SPEC B4). Projects: featured first, then date. */
+import Base from '../../layouts/Base.astro';
+import LaneIndex from '../../components/LaneIndex.astro';
+import { LANES, LANE_LABEL, getEntries, type Lane } from '../../lib/content';
+import { getAlternates } from '../../lib/alternates';
+
+export function getStaticPaths() {
+  return LANES.map((lane) => ({ params: { lane } }));
+}
+const lane = Astro.params.lane as Lane;
+let entries = await getEntries(lane);
+if (lane === 'projects') {
+  entries = [...entries].sort((a, b) => (a.featured ?? 99) - (b.featured ?? 99) || b.date.getTime() - a.date.getTime());
+}
+const DESC: Record<Lane, string> = {
+  writing: 'Longer pieces, revised and stood behind.',
+  projects: 'Things AJ Van Beest builds.',
+  notes: 'Rough notes and half-formed ideas.',
+  playbooks: 'Step-by-step procedures for people and agents.',
+};
+---
+
+<Base title={LANE_LABEL[lane]} description={DESC[lane]} alternates={getAlternates({ kind: 'lane', lane })} ogImage={`/og/${lane}.png`} kind="lane">
+  <LaneIndex lane={lane} all={entries} active="all" />
+</Base>

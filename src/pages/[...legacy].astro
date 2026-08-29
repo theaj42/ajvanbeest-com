@@ -1,0 +1,45 @@
+---
+/**
+ * Redirect pages — SPEC B8, INTERFACES §7.
+ *
+ * GitHub Pages has no server-side redirects, so every old URL becomes a tiny
+ * static page at the old path (`dist/<from>/index.html`) that meta-refreshes
+ * to the new one and declares the new one canonical. A rest route at the root
+ * has the lowest priority in Astro, so it can never shadow a real page even
+ * before `getRedirects()` filters those out.
+ *
+ * Deliberately standalone (no Base layout): a redirect page must not carry
+ * nav, feeds, analytics, or anything that could be indexed as content.
+ */
+import { getRedirects } from '../lib/redirects';
+
+export async function getStaticPaths() {
+  const redirects = await getRedirects();
+  return redirects.map((r) => ({
+    // `from` is `/posts/2026-01-01_Foo`; the rest param takes it without the leading slash.
+    params: { legacy: r.from.replace(/^\//, '') },
+    props: { to: r.to },
+  }));
+}
+
+interface Props {
+  to: string;
+}
+const { to } = Astro.props;
+const absolute = new URL(to, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content={`0;url=${to}`} />
+    <link rel="canonical" href={absolute} />
+    <meta name="robots" content="noindex" />
+    <title>Moved</title>
+  </head>
+  <body>
+    <p>This page moved to <a href={to}>{to}</a></p>
+  </body>
+</html>

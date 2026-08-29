@@ -1,0 +1,106 @@
+---
+/**
+ * Lane index body (SPEC B4, Writing artboard). Used by `/<lane>/` and the
+ * static filtered views `/<lane>/maturity/<m>/`. On `/<lane>/` a tiny inline
+ * script also honours `?maturity=<m>` for JS-on visitors.
+ */
+import type { Entry, Lane, Maturity } from '../lib/content';
+import { LANE_LABEL } from '../lib/content';
+import MaturityFilter from './MaturityFilter.astro';
+import EntryRow from './EntryRow.astro';
+
+interface Props {
+  lane: Lane;
+  /** Every non-draft entry in the lane, already in display order. */
+  all: Entry[];
+  active: Maturity | 'all';
+}
+const { lane, all, active } = Astro.props;
+
+const INTRO: Record<Lane, string> = {
+  writing: "Longer pieces I've revised and stand behind, plus a few still growing. Rough notes live in the garden.",
+  projects: 'Things I build. Some are live, some are in progress, some are private for now.',
+  notes: 'Rough notes and half-formed ideas. Most start as seedlings; a few grow up and move to writing.',
+  playbooks: 'Step-by-step procedures a person or an agent can follow without prior security experience.',
+};
+
+const counts: Record<Maturity, number> = { seedling: 0, growing: 0, evergreen: 0 };
+for (const e of all) counts[e.maturity]++;
+const shown = active === 'all' ? all : all.filter((e) => e.maturity === active);
+// Chip row shows the lane's most-used tags (canvas shows a handful + "all →"); /tags/ has the rest.
+const tagCounts = new Map<string, number>();
+for (const e of all) for (const t of e.tags) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+const tags = [...tagCounts.entries()]
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'en-US'))
+  .slice(0, 4)
+  .map(([t]) => t);
+const MLABEL: Record<Maturity, string> = { seedling: 'seedling', growing: 'growing', evergreen: 'evergreen' };
+---
+
+<div class="container lane">
+  <header class="page-head">
+    <h1 class="h-display">{LANE_LABEL[lane]}</h1>
+    <p class="intro">{INTRO[lane]}</p>
+  </header>
+
+  <div class="filters">
+    <MaturityFilter lane={lane} counts={counts} total={all.length} active={active} />
+    {tags.length > 0 && (
+      <div class="tags">
+        <span class="mono">Tags</span>
+        <ul class="tag-row tag-list" aria-label="Tags used in this lane">
+          {tags.map((t) => <li><a href={`/tags/${t}/`} class="tag">{t}</a></li>)}
+        </ul>
+        <a href="/tags/" class="mono all">all →</a>
+      </div>
+    )}
+  </div>
+
+  <div class="list" data-entry-list>
+    {active !== 'all' && <p class="filter-note visually-hidden">Showing {shown.length} {MLABEL[active]} {shown.length === 1 ? 'entry' : 'entries'}.</p>}
+    {shown.length === 0 && <p class="empty">Nothing here yet.</p>}
+    {shown.map((e, i) => (
+      <EntryRow entry={e} dense showStatus={lane === 'projects'} last={i === shown.length - 1} />
+    ))}
+    <p class="empty" data-empty-msg hidden>Nothing here yet.</p>
+  </div>
+</div>
+
+{active === 'all' && (
+  <script is:inline>
+    // Progressive enhancement: `/<lane>/?maturity=<m>` filters the list client-side.
+    // The canonical no-JS filtered views live at `/<lane>/maturity/<m>/` (the pill links).
+    (function () {
+      var m = new URLSearchParams(location.search).get('maturity');
+      if (!m || ['seedling', 'growing', 'evergreen'].indexOf(m) < 0) return;
+      var rows = document.querySelectorAll('[data-entry-list] [data-maturity]');
+      var visible = 0;
+      for (var i = 0; i < rows.length; i++) {
+        var hide = rows[i].getAttribute('data-maturity') !== m;
+        rows[i].hidden = hide;
+        if (!hide) visible++;
+      }
+      var empty = document.querySelector('[data-empty-msg]');
+      if (empty) empty.hidden = visible > 0;
+      var pills = document.querySelectorAll('[data-maturity-filter] [data-filter]');
+      for (var j = 0; j < pills.length; j++) {
+        if (pills[j].getAttribute('data-filter') === m) pills[j].setAttribute('aria-current', 'page');
+        else pills[j].removeAttribute('aria-current');
+      }
+    })();
+  </script>
+)}
+
+<style>
+  .lane { padding-top: 72px; padding-bottom: 80px; display: flex; flex-direction: column; gap: 36px; }
+  .filters { display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 10px 0; }
+  .tags { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .tag-list { list-style: none; margin: 0; padding: 0; }
+  .all { color: var(--accent); margin-left: 6px; }
+  .list { display: flex; flex-direction: column; }
+  .empty { color: var(--fg-muted); font-style: italic; padding: 26px 0; margin: 0; }
+  @media (max-width: 640px) {
+    .lane { padding-top: 36px; padding-bottom: 40px; gap: 24px; }
+    .filters { padding: 12px 0; }
+  }
+</style>

@@ -1,0 +1,34 @@
+---
+/** Featured project card (Main artboard). Whole card is the link. */
+import type { Entry } from '../lib/content';
+
+interface Props { entry: Entry; headingLevel?: 'h2' | 'h3' }
+const { entry, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+const STATUS: Record<string, string> = { live: 'Live', 'in-progress': 'In progress', private: 'Private, for now', archived: 'Archived' };
+const status = entry.status ?? 'in-progress';
+---
+
+<a href={entry.url} class="card project-card">
+  <p class:list={['mono', 'status', status]}>{STATUS[status]}</p>{' '}
+  <Heading class="title">{entry.title}</Heading>{' '}
+  {entry.description && <p class="desc">{entry.description}</p>}
+</a>
+
+<style>
+  .project-card p { margin: 0; }
+  .project-card { display: flex; flex-direction: column; gap: 12px; padding: 24px; color: var(--fg); min-height: 150px; }
+  .project-card:hover { text-decoration: none; border-color: var(--line); }
+  .project-card:hover .title { color: var(--accent); }
+  .status.live { color: var(--accent-2); }
+  .status.in-progress { color: var(--grow); }
+  .status.private, .status.archived { color: var(--fg-muted); }
+  .title { font-family: var(--display); font-size: 24px; font-weight: 500; color: var(--heading); line-height: 1.15; margin: 0; }
+  .desc { font-size: 15px; line-height: 1.45; color: var(--fg-muted); }
+
+  @media (max-width: 640px) {
+    .project-card { gap: 6px; padding: 16px 18px; min-height: 0; }
+    .title { font-size: 21px; }
+    .desc { font-size: 14px; }
+  }
+</style>

@@ -1,0 +1,406 @@
+---
+/**
+ * Site search — SPEC B7. Pagefind indexes `dist/` at the end of `npm run build`;
+ * this component is the only UI for it.
+ *
+ * - A ≥44px button (magnifier + "Search", label hidden on narrow screens)
+ *   opens a native <dialog> as a modal.
+ * - `/pagefind/pagefind-ui.js` + `.css` are fetched on first open only.
+ * - Keyboard: `/` opens (ignored while typing in a field), Esc closes,
+ *   clicking the backdrop closes.
+ * - Results show lane and maturity from Pagefind metadata. Entry pages must
+ *   carry, on their <article>:
+ *     data-pagefind-body
+ *     data-pagefind-meta="lane[data-lane], maturity[data-maturity]"
+ *     data-lane="<lane>" data-maturity="<maturity>"
+ *   (attribute form — Pagefind 1.5 does not split inline `key:value` meta on
+ *   commas). The label is simply omitted when the meta is absent.
+ * - Any element with `data-search-open` (or an `<a href="#search">`) also
+ *   opens the dialog, so a footer "Search" link needs no extra script.
+ *
+ * Styling uses only the site tokens (INTERFACES §6) via CSS variables, so the
+ * dialog follows the light/dark attribute without any colour of its own.
+ */
+---
+
+<button
+  type="button"
+  class="search-open"
+  data-search-open
+  aria-label="Search"
+  aria-haspopup="dialog"
+  aria-controls="site-search"
+  title="Search (press /)"
+>
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+    <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+    <path d="M15.5 15.5 L20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+  </svg>
+  <span class="search-open__label">Search</span>
+</button>
+
+<dialog id="site-search" class="search-dialog" aria-label="Search this site">
+  <div class="search-panel">
+    <div class="search-head">
+      <span class="search-head__title">Search</span>
+      <button type="button" class="search-close" data-search-close aria-label="Close search">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+          <path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        <span class="search-close__label">Esc</span>
+      </button>
+    </div>
+    <div class="search-ui" data-search-ui>
+      <p class="search-status" data-search-status hidden>Loading search…</p>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .search-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 0.6rem;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--fg);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .search-open:hover {
+    color: var(--accent);
+    border-color: var(--line);
+  }
+  .search-open:focus-visible,
+  .search-close:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (max-width: 640px) {
+    .search-open__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+  }
+
+  .search-dialog {
+    /* dialog UA styles reset */
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--fg);
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+  }
+  .search-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+  }
+  .search-panel {
+    box-sizing: border-box;
+    width: min(720px, calc(100vw - 32px));
+    max-height: calc(100vh - 96px);
+    max-height: calc(100dvh - 96px);
+    margin: 48px auto 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+  }
+  @media (max-width: 640px) {
+    .search-panel {
+      width: 100%;
+      max-height: 100vh;
+      max-height: 100dvh;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+    }
+  }
+  .search-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem 0.5rem 1rem;
+    border-bottom: 1px solid var(--line-soft);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  .search-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--fg-muted);
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+  }
+  .search-close:hover {
+    color: var(--accent);
+  }
+  .search-ui {
+    padding: 1rem;
+    overflow-y: auto;
+    font-family: var(--body);
+  }
+  .search-status {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+</style>
+
+<style is:global>
+  /* Pagefind UI theming — its stylesheet is loaded lazily and reads these variables. */
+  .search-dialog .pagefind-ui {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--fg);
+    --pagefind-ui-background: var(--bg);
+    --pagefind-ui-border: var(--line);
+    --pagefind-ui-tag: var(--bg-soft);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 6px;
+    --pagefind-ui-image-border-radius: 6px;
+    --pagefind-ui-font: var(--body);
+  }
+  .search-dialog .pagefind-ui__search-input {
+    background: var(--bg-soft);
+  }
+  .search-dialog .pagefind-ui__search-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .search-dialog .pagefind-ui__result {
+    border-color: var(--line-soft);
+  }
+  .search-dialog .pagefind-ui__result-link {
+    font-family: var(--display);
+    font-weight: 500;
+    color: var(--heading);
+  }
+  .search-dialog .pagefind-ui__result-link:hover {
+    color: var(--accent);
+  }
+  .search-dialog .pagefind-ui__result-excerpt {
+    color: var(--fg);
+  }
+  .search-dialog .pagefind-ui__result-excerpt mark {
+    background: transparent;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .search-dialog .pagefind-ui__button,
+  .search-dialog .pagefind-ui__search-clear {
+    min-height: 44px;
+  }
+  .search-dialog .pagefind-ui__message {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  /* lane · maturity label injected in front of each excerpt */
+  .search-dialog .search-meta {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  .search-dialog .search-meta[data-maturity='seedling'] {
+    color: var(--seed);
+  }
+  .search-dialog .search-meta[data-maturity='growing'] {
+    color: var(--grow);
+  }
+  .search-dialog .search-meta[data-maturity='evergreen'] {
+    color: var(--ever);
+  }
+  body:has(.search-dialog[open]) {
+    overflow: hidden;
+  }
+</style>
+
+<script>
+  type PagefindResult = {
+    url: string;
+    excerpt: string;
+    meta: Record<string, string | undefined>;
+  };
+  type PagefindUIOptions = {
+    element: HTMLElement | string;
+    showSubResults?: boolean;
+    showImages?: boolean;
+    autofocus?: boolean;
+    excerptLength?: number;
+    processResult?: (result: PagefindResult) => PagefindResult | void;
+  };
+  declare global {
+    interface Window {
+      PagefindUI?: new (options: PagefindUIOptions) => unknown;
+    }
+  }
+
+  const LANE_LABEL: Record<string, string> = {
+    writing: 'Writing',
+    projects: 'Projects',
+    notes: 'Notes',
+    playbooks: 'Playbooks',
+  };
+
+  const dialog = document.getElementById('site-search') as HTMLDialogElement | null;
+  const mount = dialog?.querySelector<HTMLElement>('[data-search-ui]') ?? null;
+  const status = dialog?.querySelector<HTMLElement>('[data-search-status]') ?? null;
+
+  let loaded: Promise<void> | null = null;
+
+  function label(s: string): string {
+    return LANE_LABEL[s] ?? s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  function escapeHtml(s: string): string {
+    return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+  }
+
+  function loadAsset(tag: 'link' | 'script', href: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const el = document.createElement(tag);
+      if (tag === 'link') {
+        (el as HTMLLinkElement).rel = 'stylesheet';
+        (el as HTMLLinkElement).href = href;
+      } else {
+        (el as HTMLScriptElement).src = href;
+      }
+      el.addEventListener('load', () => resolve());
+      el.addEventListener('error', () => reject(new Error(`failed to load ${href}`)));
+      document.head.appendChild(el);
+    });
+  }
+
+  function ensureLoaded(): Promise<void> {
+    if (loaded) return loaded;
+    if (!mount) return Promise.reject(new Error('search mount missing'));
+    if (status) status.hidden = false;
+    loaded = Promise.all([loadAsset('link', '/pagefind/pagefind-ui.css'), loadAsset('script', '/pagefind/pagefind-ui.js')])
+      .then(() => {
+        if (!window.PagefindUI) throw new Error('PagefindUI missing');
+        if (status) status.remove();
+        new window.PagefindUI({
+          element: mount,
+          showSubResults: false,
+          showImages: false,
+          autofocus: true,
+          excerptLength: 24,
+          processResult(result) {
+            const lane = result.meta?.lane;
+            const maturity = result.meta?.maturity;
+            if (lane || maturity) {
+              const parts = [lane && label(lane), maturity && label(maturity)].filter(Boolean) as string[];
+              const attr = maturity ? ` data-maturity="${escapeHtml(maturity)}"` : '';
+              result.excerpt = `<span class="search-meta"${attr}>${escapeHtml(parts.join(' · '))}</span>${result.excerpt}`;
+              // Pagefind UI renders every remaining meta key as a "Key: value" chip;
+              // these two are now in the label, so drop them.
+              delete result.meta.lane;
+              delete result.meta.maturity;
+            }
+            return result;
+          },
+        });
+      })
+      .catch((err) => {
+        loaded = null;
+        if (status) {
+          status.hidden = false;
+          status.textContent = 'Search is unavailable right now.';
+        }
+        throw err;
+      });
+    return loaded;
+  }
+
+  function focusInput() {
+    const input = dialog?.querySelector<HTMLInputElement>('input.pagefind-ui__search-input');
+    input?.focus();
+    input?.select();
+  }
+
+  function open() {
+    if (!dialog || dialog.open) return;
+    dialog.showModal();
+    ensureLoaded().then(focusInput, () => {});
+  }
+
+  function close() {
+    if (dialog?.open) dialog.close();
+  }
+
+  function isTyping(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) return false;
+    if (target.isContentEditable) return true;
+    const tag = target.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
+  }
+
+  if (dialog) {
+    document.addEventListener('click', (ev) => {
+      const t = ev.target instanceof Element ? ev.target : null;
+      if (!t) return;
+      if (t.closest('[data-search-open], a[href="#search"]')) {
+        ev.preventDefault();
+        open();
+      } else if (t.closest('[data-search-close]')) {
+        close();
+      }
+    });
+
+    // backdrop click: the dialog element itself is the full-viewport backdrop
+    dialog.addEventListener('click', (ev) => {
+      if (ev.target === dialog) close();
+    });
+
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === '/' && !ev.metaKey && !ev.ctrlKey && !ev.altKey && !isTyping(ev.target) && !dialog.open) {
+        ev.preventDefault();
+        open();
+      }
+      // Esc is handled natively by <dialog>; nothing to do.
+    });
+
+    if (location.hash === '#search') open();
+  }
+</script>

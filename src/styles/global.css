@@ -1,0 +1,146 @@
+/* Self-hosted fonts (INTERFACES §6). fontsource ships font-display: swap. */
+@import '@fontsource-variable/newsreader/opsz.css';
+@import '@fontsource-variable/newsreader/opsz-italic.css';
+@import '@fontsource-variable/source-serif-4/opsz.css';
+@import '@fontsource-variable/source-serif-4/opsz-italic.css';
+@import '@fontsource-variable/jetbrains-mono/wght.css';
+
+:root {
+  --display: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
+  --body: 'Source Serif 4 Variable', 'Iowan Old Style', Georgia, serif;
+  --mono: 'JetBrains Mono Variable', ui-monospace, Menlo, Consolas, monospace;
+  --pad: 64px;
+  color-scheme: light;
+}
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 17px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased; text-wrap: pretty;
+  min-height: 100vh; display: flex; flex-direction: column;
+  overflow-x: hidden;
+}
+main { flex: 1 0 auto; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
+img, svg, video { max-width: 100%; height: auto; }
+svg { height: auto; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+h1, h2, h3, h4 { margin: 0; font-weight: 500; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+::selection { background: var(--bg-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+.skip-link {
+  position: absolute; left: 16px; top: -100px; z-index: 100;
+  padding: 10px 14px; background: var(--bg-soft); color: var(--heading);
+  border: 1px solid var(--line); border-radius: 3px;
+  font-family: var(--mono); font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.skip-link:focus { top: 16px; text-decoration: none; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- shared classes (from the canvas <style>) ---------- */
+.container { max-width: 1120px; margin: 0 auto; padding-left: var(--pad); padding-right: var(--pad); width: 100%; }
+.mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); }
+.nav-link { font-family: var(--mono); font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg); }
+.nav-link:hover { color: var(--accent); text-decoration: none; }
+.wordmark { font-family: var(--display); font-size: 22px; font-weight: 500; color: var(--heading); letter-spacing: -0.01em; }
+.wordmark:hover { text-decoration: none; color: var(--accent); }
+.h-display { font-family: var(--display); font-weight: 400; color: var(--heading); letter-spacing: -0.02em; margin: 0; }
+.h-section { font-family: var(--display); font-weight: 500; font-size: 30px; line-height: 1.1; color: var(--heading); margin: 0; letter-spacing: -0.01em; }
+.entry-title { font-family: var(--display); font-weight: 500; font-size: 27px; line-height: 1.15; color: var(--heading); letter-spacing: -0.01em; }
+a.entry-title:hover, .entry-title a:hover { color: var(--accent); text-decoration: none; }
+.entry-title a { color: inherit; }
+.muted { color: var(--fg-muted); }
+.rule { height: 1px; background: var(--line); }
+.tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; color: var(--fg-muted); border: 1px solid var(--line); border-radius: 3px; padding: 2px 7px; display: inline-flex; align-items: center; position: relative; }
+.tag:hover { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+.tag::after { content: ''; position: absolute; inset: -8px -4px; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.icon { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.card { background: var(--bg-soft); border: 1px solid var(--line-soft); border-radius: 4px; }
+.mark { width: 12px; height: 12px; flex-shrink: 0; }
+.mark-label { display: inline-flex; align-items: center; gap: 7px; }
+.section-link { color: var(--accent); }
+
+/* Section header (home) */
+.section { padding-top: 72px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.section-head .lede { font-style: italic; color: var(--fg-muted); font-size: 16px; }
+
+/* Page header (lane index, tags, about) */
+.page-head { display: flex; flex-direction: column; gap: 14px; }
+.page-head h1 { font-size: 56px; line-height: 1.05; font-weight: 500; }
+.page-head .intro { margin: 0; font-size: 20px; max-width: 640px; color: var(--fg-muted); }
+
+/* ---------- entry body typography ---------- */
+.body { font-size: 18px; line-height: 1.65; }
+.body > :first-child { margin-top: 0; }
+.body p { margin: 0 0 1.25em; }
+.body h2 { font-family: var(--display); font-weight: 500; font-size: 30px; line-height: 1.15; color: var(--heading); margin: 2em 0 0.6em; letter-spacing: -0.01em; }
+.body h3 { font-family: var(--display); font-weight: 500; font-size: 23px; line-height: 1.2; color: var(--heading); margin: 1.6em 0 0.5em; }
+.body h4 { font-family: var(--display); font-weight: 500; font-size: 19px; line-height: 1.3; color: var(--heading); margin: 1.4em 0 0.4em; }
+.body ul, .body ol { padding-left: 1.3em; margin: 0 0 1.25em; }
+.body li { margin-bottom: 0.35em; }
+.body li > ul, .body li > ol { margin-top: 0.35em; margin-bottom: 0; }
+.body em { font-style: italic; }
+.body strong { font-weight: 600; color: var(--heading); }
+.body a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
+.body a:hover { text-decoration-color: currentColor; }
+.body code { font-family: var(--mono); font-size: 0.85em; background: var(--bg-soft); padding: 1px 5px; border-radius: 3px; }
+.body pre { margin: 0 0 1.5em; padding: 18px 20px; border-radius: 4px; border: 1px solid var(--line-soft); overflow-x: auto; font-size: 14px; line-height: 1.55; }
+.body pre code { background: none; padding: 0; font-size: inherit; }
+.body blockquote { margin: 0 0 1.25em; padding: 4px 0 4px 20px; border-left: 2px solid var(--line); color: var(--fg-muted); font-style: italic; }
+.body blockquote p:last-child { margin-bottom: 0; }
+.body hr { border: 0; height: 1px; background: var(--line-soft); margin: 2.5em 0; }
+.body img { display: block; margin: 0 0 1.25em; border-radius: 4px; }
+.body figure { margin: 0 0 1.5em; }
+.body figcaption { font-size: 15px; color: var(--fg-muted); margin-top: 8px; }
+.body table { border-collapse: collapse; width: 100%; margin: 0 0 1.5em; font-size: 16px; display: block; overflow-x: auto; }
+.body th, .body td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+.body th { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-muted); font-weight: 500; }
+.body h2 a, .body h3 a { color: inherit; text-decoration: none; }
+
+/* Shiki dual-theme support. Effective once astro.config.mjs sets
+   shikiConfig.themes {light, dark} with defaultColor:false; inert otherwise. */
+.astro-code { color: var(--shiki-light); background-color: var(--shiki-light-bg); }
+.astro-code span { color: var(--shiki-light); }
+:root[data-theme="dark"] .astro-code { color: var(--shiki-dark); background-color: var(--shiki-dark-bg); }
+:root[data-theme="dark"] .astro-code span { color: var(--shiki-dark); }
+
+/* ---------- TOC ---------- */
+.toc a { color: var(--fg-muted); font-size: 14px; line-height: 1.4; }
+.toc a:hover { color: var(--accent); text-decoration: none; }
+.toc a.active, .toc a[aria-current="true"] { color: var(--heading); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 640px) {
+  :root { --pad: 20px; }
+  .section { padding-top: 36px; }
+  .section-head { padding-bottom: 12px; }
+  .section-head .lede { display: none; }
+  .h-section { font-size: 24px; }
+  .section-link { font-size: 11px; }
+  .section-link-long { display: none; }
+  .page-head h1 { font-size: 40px; }
+  .page-head .intro { font-size: 17px; }
+  .body { font-size: 17px; line-height: 1.6; }
+  .body h2 { font-size: 26px; }
+  .body h3 { font-size: 21px; }
+  .body pre { padding: 14px 16px; font-size: 13px; }
+}
+
+/* Bigger hit areas on touch devices without changing the desktop look. */
+@media (pointer: coarse) {
+  .tag { padding: 6px 9px; }
+  .toc a { padding: 6px 0; display: block; }
+  .section-link { display: inline-flex; align-items: center; min-height: 44px; }
+}

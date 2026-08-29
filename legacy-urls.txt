@@ -1,0 +1,11 @@
+/posts/2026-01-01_Composable-security-investigations	/writing/composable-security-investigation/
+/posts/2025-12-01_Building-my-daemon	/writing/building-my-daemon/
+/posts/2025-12-01_Updating-my-telos-with-ai	/writing/updating-my-telos-with-ai/
+/posts/2025-06-29_Morning-pages-analysis	/writing/morning-pages-analysis/
+/posts/hello-world	/writing/hello-world/
+/posts/2026-01-01_Playbook-geoip-lookup	/playbooks/geoip-lookup/
+/index.xml	/rss.xml
+/about/aj	/about/
+/about/claude	/about/
+/about/ai-collaboration	/about/
+/about/our-process	/about/
