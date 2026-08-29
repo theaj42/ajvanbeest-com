@@ -5,7 +5,7 @@ author: ["AJ Van Beest"]
 tags: ["workflow", "ai", "journaling", "morning-pages", "productivity", "claude"]
 ---
 
-## *Or: **How to Herd the Morning Cats***
+## *Or: **How to Herd the "Morning Cats"***
 
 ## Table of Contents
 
