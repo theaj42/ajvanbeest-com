@@ -94,30 +94,67 @@ test('S06 (supporting, B3) home garden rows carry the marker matching each note 
 });
 
 // ---------------- S07 ----------------
-async function checkFilter(lane, maturity) {
+// Spec revision 2026-08-29: canonical filtered views are static pages /<lane>/maturity/<m>/ (work
+// with JS disabled); /<lane>/?maturity=<m> is progressive enhancement with JS on (hides rows).
+const VISIBLE_ENTRY_URLS = (arg, t) => {
+  const root = document.querySelector('main') || document.body;
+  const vis = (el) => { if (!el.getClientRects().length) return false; for (let p = el; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.display === 'none' || cs.visibility === 'hidden' || p.hidden) return false; } return true; };
+  const out = new Set();
+  for (const a of t.entryAnchors(root, arg.urls)) if (vis(a)) out.add(t.pathOf(a.getAttribute('href')));
+  return Array.from(out);
+};
+async function checkStaticFilter(lane, maturity) {
   const expected = pub.filter((e) => e.lane === lane && e.maturity === maturity);
   const laneUrls = pub.filter((e) => e.lane === lane).map((e) => e.url);
+  const url = `/${lane}/maturity/${maturity}/`;
+  assert.ok(H.distExists(`${lane}/maturity/${maturity}/index.html`), `dist/${lane}/maturity/${maturity}/index.html missing (static filtered view)`);
   const { page, close } = await B.open(browser, { javaScriptEnabled: false });
   try {
-    await page.goto(`/${lane}/?maturity=${maturity}`, { waitUntil: 'load' });
+    const resp = await page.goto(url, { waitUntil: 'load' });
+    assert.equal(resp && resp.status(), 200, `${url} must be 200`);
     const listed = await B.evalWithTools(page, (arg, t) => t.listedEntryUrls(arg.urls), { urls: laneUrls });
-    assert.deepEqual([...listed].sort(), expected.map((e) => e.url).sort(), `/${lane}/?maturity=${maturity} (no JS) must list exactly the ${maturity} entries`);
-    for (const url of listed) {
-      const row = await B.evalWithTools(page, (arg, t) => t.rowFor(arg.url, arg.urls), { url, urls: laneUrls });
-      assert.ok(!row.error, `${url}: ${row.error}`);
-      assert.ok(row.markers.every((m) => m === maturity), `${url}: filtered list row carries [${row.markers}], expected only ${maturity}`);
+    assert.deepEqual([...listed].sort(), expected.map((e) => e.url).sort(), `${url} (no JS) must list exactly the ${maturity} entries`);
+    for (const u of listed) {
+      const row = await B.evalWithTools(page, (arg, t) => t.rowFor(arg.url, arg.urls), { url: u, urls: laneUrls });
+      assert.ok(!row.error, `${u}: ${row.error}`);
+      assert.ok(row.markers.every((m) => m === maturity), `${u}: filtered list row carries [${row.markers}], expected only ${maturity}`);
     }
-    const html = await page.content();
-    for (const m of H.MATURITIES) assert.ok(/href=["'][^"']*\?maturity=/.test(html) && html.toLowerCase().includes(`?maturity=${m}`), `/${lane}/ must offer a no-JS filter link ?maturity=${m}`);
+    const stray = await B.evalWithTools(page, (arg, t) => t.findMarkers(document.querySelector('main') || document.body).map((m) => m.value), null);
+    // markers of other maturities may appear in the filter pills/legend, never inside a listed row (checked above)
+    assert.ok(stray.includes(maturity) || expected.length === 0, `${url}: no ${maturity} marker rendered at all`);
   } finally { await close(); }
 }
-test('S07 filter without JS: /writing/?maturity=growing renders only growing entries with JavaScript disabled', T(60000), async () => {
+test('S07 filter without JS: /writing/maturity/growing/ renders only growing entries with JavaScript disabled, and the lane index pills link to the static filtered views', T(90000), async () => {
   assert.ok(pub.some((e) => e.lane === 'writing' && e.maturity === 'growing'), 'precondition: at least one growing writing entry (INTERFACES §4 has two)');
-  await checkFilter('writing', 'growing');
+  await checkStaticFilter('writing', 'growing');
+  const { page, close } = await B.open(browser, { javaScriptEnabled: false });
+  try {
+    await page.goto('/writing/', { waitUntil: 'load' });
+    const pills = await page.evaluate(() => Array.from(document.querySelectorAll('a[href]')).map((a) => new URL(a.getAttribute('href'), location.href).pathname));
+    for (const m of H.MATURITIES) assert.ok(pills.includes(`/writing/maturity/${m}/`), `/writing/ must link the ${m} pill to /writing/maturity/${m}/ (no-JS filtering)`);
+    const text = await page.evaluate(() => (document.querySelector('main') || document.body).textContent.replace(/\s+/g, ' '));
+    for (const m of H.MATURITIES) { const n = pub.filter((e) => e.lane === 'writing' && e.maturity === m).length; assert.ok(new RegExp(`${m}\\D{0,12}${n}\\b`, 'i').test(text), `/writing/ pill for ${m} must show its count (${n})`); }
+  } finally { await close(); }
 });
-test('S07 (supporting) /writing/?maturity=evergreen and ?maturity=seedling also filter without JS', T(60000), async () => {
-  await checkFilter('writing', 'evergreen');
-  await checkFilter('writing', 'seedling');
+test('S07 (supporting) static filtered views for evergreen and seedling in /writing/, and for every lane × maturity the page exists', T(120000), async () => {
+  await checkStaticFilter('writing', 'evergreen');
+  await checkStaticFilter('writing', 'seedling');
+  for (const lane of H.LANES) for (const m of H.MATURITIES) assert.ok(H.distExists(`${lane}/maturity/${m}/index.html`), `dist/${lane}/maturity/${m}/index.html missing`);
+});
+test('S07 progressive enhancement: with JS on, /writing/?maturity=growing shows only the growing rows (non-matching rows hidden)', T(60000), async () => {
+  const laneUrls = pub.filter((e) => e.lane === 'writing').map((e) => e.url);
+  const expected = pub.filter((e) => e.lane === 'writing' && e.maturity === 'growing').map((e) => e.url).sort();
+  const { page, close } = await B.open(browser);
+  try {
+    await page.goto('/writing/?maturity=growing', { waitUntil: 'load' });
+    await page.waitForFunction((n) => { const root = document.querySelector('main') || document.body; return Array.from(root.querySelectorAll('a[href]')).filter((a) => /^\/writing\/[^/]+\/$/.test(new URL(a.getAttribute('href'), location.href).pathname) && a.getClientRects().length).length <= n; }, expected.length, { timeout: 10000 }).catch(() => {});
+    const visible = await B.evalWithTools(page, VISIBLE_ENTRY_URLS, { urls: laneUrls });
+    assert.deepEqual(visible.sort(), expected, '/writing/?maturity=growing with JS must leave exactly the growing rows visible');
+    await page.goto('/writing/?maturity=evergreen', { waitUntil: 'load' });
+    await page.waitForTimeout(500);
+    const ever = await B.evalWithTools(page, VISIBLE_ENTRY_URLS, { urls: laneUrls });
+    assert.deepEqual(ever.sort(), pub.filter((e) => e.lane === 'writing' && e.maturity === 'evergreen').map((e) => e.url).sort(), '/writing/?maturity=evergreen with JS must leave exactly the evergreen rows visible');
+  } finally { await close(); }
 });
 
 // ---------------- S10 (well-formedness) ----------------
