@@ -1,25 +1,87 @@
 ---
-// Placeholder shell — replaced by P2 (nav, footer, theme script, alternates).
+/**
+ * Site shell (INTERFACES §2, P2). Head metadata, theme bootstrap, fonts,
+ * alternates, Plausible, skip link, nav, main, footer.
+ */
+import '../styles/tokens.css';
+import '../styles/global.css';
 import type { Alternate } from '../lib/alternates';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
   title?: string;
   description?: string;
   alternates?: Alternate[];
+  /** Site-relative path of the OG image, e.g. `/og/writing/slug.png`. */
+  ogImage?: string;
+  kind?: 'site' | 'lane' | 'entry' | 'page';
+  /** Entry pages get the one-row footer from the Post artboard. */
+  compactFooter?: boolean;
+  /** Set on the `<html>` element (lane pages pass the lane id). */
+  bodyClass?: string;
 }
-const { title = 'AJ Van Beest', description = '', alternates = [] } = Astro.props;
+
+const SITE_NAME = 'AJ Van Beest';
+const {
+  title,
+  description = 'I build robots to fight cybercrime.',
+  alternates = [],
+  ogImage = '/og/index.png',
+  kind = 'page',
+  compactFooter = false,
+  bodyClass,
+} = Astro.props;
+
+const fullTitle = title && title !== SITE_NAME ? `${title} · ${SITE_NAME}` : SITE_NAME;
+const site = Astro.site ?? new URL('https://ajvanbeest.com');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImageAbs = new URL(ogImage, site).href;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
+    <script is:inline>
+      // Theme bootstrap — must run before any paint. localStorage.theme wins,
+      // else prefers-color-scheme. The attribute is the only theme switch.
+      (function () {
+        var t;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    {description && <meta name="description" content={description} />}
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content={kind === 'entry' ? 'article' : 'website'} />
+    <meta property="og:title" content={title ?? SITE_NAME} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageAbs} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title ?? SITE_NAME} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbs} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     {alternates.map((a) => <link rel={a.rel} type={a.type} href={a.href} title={a.title} />)}
+    <script is:inline defer data-domain="ajvanbeest.com" src="https://plausible.io/js/script.js"></script>
   </head>
-  <body>
-    <slot />
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Nav />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer compact={compactFooter} />
   </body>
 </html>

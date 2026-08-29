@@ -1,0 +1,81 @@
+---
+/** Site header. Desktop: wordmark · lanes · About · search · RSS · theme. ≤640px: wordmark · search · menu (a no-JS <details> disclosure). */
+import { LANES, LANE_LABEL } from '../lib/content';
+import Search from './Search.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+const seg = Astro.url.pathname.split('/').filter(Boolean)[0] ?? '';
+const current = (LANES as string[]).includes(seg) ? seg : seg === 'about' ? 'about' : '';
+const items: { href: string; label: string; key: string }[] = [
+  ...LANES.map((l) => ({ href: `/${l}/`, label: LANE_LABEL[l], key: l })),
+  { href: '/about/', label: 'About', key: 'about' },
+];
+---
+
+<header class="site-header">
+  <nav class="nav" aria-label="Primary">
+    <a href="/" class="wordmark">AJ Van Beest</a>
+    <ul class="nav-lanes">
+      {items.map((it) => (
+        <li><a href={it.href} class="nav-link" aria-current={current === it.key ? 'page' : undefined}>{it.label}</a></li>
+      ))}
+    </ul>
+    <div class="nav-actions">
+      <div class="nav-search" id="search"><Search /></div>
+      <a href="/rss.xml" class="icon-btn" aria-label="RSS feed" title="RSS">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none"></circle><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path></svg>
+      </a>
+      <ThemeToggle class="nav-theme" />
+      <details class="nav-menu">
+        <summary class="icon-btn" aria-label="Menu">
+          <svg class="icon menu-open" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+          <svg class="icon menu-close" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </summary>
+        <ul class="nav-menu-list">
+          {items.map((it) => (
+            <li><a href={it.href} class="nav-link" aria-current={current === it.key ? 'page' : undefined}>{it.label}</a></li>
+          ))}
+          <li><a href="/rss.xml" class="nav-link">RSS</a></li>
+          <li class="nav-menu-theme"><span class="nav-link">Theme</span><ThemeToggle /></li>
+        </ul>
+      </details>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .site-header { border-bottom: 1px solid var(--line-soft); background: var(--bg); }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 72px; padding: 0 var(--pad); position: relative; }
+  .nav-lanes { display: flex; gap: 32px; align-items: center; list-style: none; margin: 0; padding: 0; }
+  .nav-lanes a[aria-current="page"] { color: var(--accent); }
+  .nav-actions { display: flex; gap: 20px; align-items: center; color: var(--fg-muted); }
+  .nav-search { display: flex; align-items: center; }
+  .icon-btn { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0 -13px; color: var(--fg-muted); border-radius: 4px; list-style: none; cursor: pointer; }
+  .icon-btn:hover { color: var(--accent); }
+  .nav-actions > :global(.nav-theme) { margin: 0 -13px; }
+  .nav-menu { display: none; }
+  .nav-menu > summary { list-style: none; }
+  .nav-menu:not([open]) .nav-menu-list { display: none; }
+  .nav-menu > summary::-webkit-details-marker { display: none; }
+  .menu-close { display: none; }
+  .nav-menu[open] .menu-open { display: none; }
+  .nav-menu[open] .menu-close { display: block; }
+  .nav-menu-list { list-style: none; margin: 0; padding: 8px 0 12px; }
+  .nav-menu-list li { display: flex; }
+  .nav-menu-list a { display: flex; align-items: center; min-height: 48px; padding: 0 var(--pad); width: 100%; border-top: 1px solid var(--line-soft); }
+  .nav-menu-list a[aria-current="page"] { color: var(--accent); }
+  .nav-menu-theme { align-items: center; justify-content: space-between; padding: 0 var(--pad); min-height: 48px; border-top: 1px solid var(--line-soft); }
+
+  @media (max-width: 640px) {
+    .nav { height: 60px; }
+    :global(.wordmark) { font-size: 20px; }
+    .nav-lanes { display: none; }
+    .nav-actions { gap: 6px; }
+    .nav-actions > :global(.nav-theme) { display: none; }
+    .nav-actions > .icon-btn[href="/rss.xml"] { display: none; }
+    .icon-btn { margin: 0; }
+    .icon-btn .icon { width: 22px; height: 22px; }
+    .nav-menu { display: block; }
+    .nav-menu[open] .nav-menu-list { position: absolute; left: 0; right: 0; top: 60px; background: var(--bg); border-bottom: 1px solid var(--line); z-index: 50; }
+  }
+</style>

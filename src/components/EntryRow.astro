@@ -1,0 +1,69 @@
+---
+/**
+ * The 200px + 1fr list row from the Main/Writing artboards.
+ * ≤640px it becomes the stacked row from MobileHome.
+ */
+import type { Entry } from '../lib/content';
+import { LANE_LABEL, formatDate } from '../lib/content';
+import MaturityMark from './MaturityMark.astro';
+import TagChips from './TagChips.astro';
+
+interface Props {
+  entry: Entry;
+  /** 26px vertical padding (lane index) instead of 30px (home). */
+  dense?: boolean;
+  /** Show the italic subtitle under the title (home). */
+  showSubtitle?: boolean;
+  /** Show the lane name in the left column (tag pages). */
+  showLane?: boolean;
+  /** Show project status in the left column (projects index). */
+  showStatus?: boolean;
+  headingLevel?: 'h2' | 'h3';
+  last?: boolean;
+}
+const { entry, dense = false, showSubtitle = false, showLane = false, showStatus = false, headingLevel = 'h2', last = false } = Astro.props;
+const Heading = headingLevel;
+const STATUS: Record<string, string> = { live: 'Live', 'in-progress': 'In progress', private: 'Private, for now', archived: 'Archived' };
+---
+
+<article class:list={['row', { dense, last }]} data-maturity={entry.maturity}>
+  <div class="meta">
+    <span class="mono date">{formatDate(entry.date)}</span>
+    <MaturityMark maturity={entry.maturity} label />
+    {showLane && <a href={`/${entry.lane}/`} class="mono lane">{LANE_LABEL[entry.lane]}</a>}
+    {showStatus && entry.status && <span class:list={['mono', 'status', entry.status]}>{STATUS[entry.status]}</span>}
+  </div>
+  <div class="main">
+    <Heading class="entry-title"><a href={entry.url}>{entry.title}</a></Heading>
+    {showSubtitle && entry.subtitle && <p class="subtitle">{entry.subtitle}</p>}
+    {entry.description && <p class="desc">{entry.description}</p>}
+    <TagChips tags={entry.tags} class="tags" />
+  </div>
+</article>
+
+<style>
+  .row { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 32px; padding: 30px 0; border-bottom: 1px solid var(--line-soft); }
+  .row.dense { padding: 26px 0; }
+  .row.last { border-bottom-color: var(--line); }
+  .meta { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .lane { color: var(--accent); }
+  .status.live { color: var(--accent-2); }
+  .status.in-progress { color: var(--grow); }
+  .main { display: flex; flex-direction: column; gap: 10px; }
+  .dense .main { gap: 8px; }
+  .subtitle { margin: 0; font-style: italic; color: var(--fg-muted); font-size: 17px; }
+  .desc { margin: 0; max-width: 620px; }
+  .dense .desc { max-width: 640px; color: var(--fg-muted); }
+  .row :global(.tags) { margin-top: 4px; }
+  .dense :global(.tags) { margin-top: 2px; }
+
+  @media (max-width: 640px) {
+    .row, .row.dense { display: flex; flex-direction: column; gap: 8px; padding: 18px 0; }
+    .meta { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .meta > :first-child { order: 2; }
+    .main, .dense .main { gap: 8px; }
+    .row :global(.entry-title) { font-size: 22px; }
+    .desc, .dense .desc { font-size: 15px; line-height: 1.45; color: var(--fg-muted); }
+    .subtitle { font-size: 15px; }
+  }
+</style>

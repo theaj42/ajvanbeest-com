@@ -1,0 +1,37 @@
+---
+/**
+ * Maturity filter pills (Writing artboard). Pills link to the static filtered
+ * pages `/<lane>/maturity/<m>/` so they work with JS off; `active` marks the
+ * pill for the page being rendered.
+ */
+import type { Lane, Maturity } from '../lib/content';
+import MaturityMark from './MaturityMark.astro';
+
+interface Props {
+  lane: Lane;
+  counts: Record<Maturity, number>;
+  total: number;
+  active?: Maturity | 'all';
+}
+const { lane, counts, total, active = 'all' } = Astro.props;
+const order: Maturity[] = ['evergreen', 'growing', 'seedling'];
+const LABEL: Record<Maturity, string> = { seedling: 'Seedling', growing: 'Growing', evergreen: 'Evergreen' };
+---
+
+<nav class="pills" aria-label="Filter by maturity" data-maturity-filter>
+  <a href={`/${lane}/`} class="pill" data-filter="all" aria-current={active === 'all' ? 'page' : undefined}>All · {total}</a>
+  {order.map((m) => (
+    <a href={`/${lane}/maturity/${m}/`} class="pill" data-filter={m} aria-current={active === m ? 'page' : undefined}>
+      <MaturityMark maturity={m} />
+      <span>{LABEL[m]} · {counts[m]}</span>
+    </a>
+  ))}
+</nav>
+
+<style>
+  .pills { display: flex; gap: 4px; flex-wrap: wrap; }
+  .pill { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-muted); padding: 7px 12px; border-radius: 3px; border: 1px solid transparent; }
+  .pill:hover { color: var(--accent); text-decoration: none; }
+  .pill[aria-current="page"] { color: var(--heading); border-color: var(--line); background: var(--bg-soft); }
+  @media (pointer: coarse) { .pill { min-height: 44px; } }
+</style>
