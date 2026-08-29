@@ -1,0 +1,25 @@
+---
+// Placeholder shell — replaced by P2 (nav, footer, theme script, alternates).
+import type { Alternate } from '../lib/alternates';
+
+interface Props {
+  title?: string;
+  description?: string;
+  alternates?: Alternate[];
+}
+const { title = 'AJ Van Beest', description = '', alternates = [] } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {alternates.map((a) => <link rel={a.rel} type={a.type} href={a.href} title={a.title} />)}
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+// Placeholder — replaced by P2. Proves the four collections load through src/lib/content.ts.
+import Base from '../layouts/Base.astro';
+import { LANES, LANE_LABEL, getEntries, formatDate } from '../lib/content';
+
+const counts = await Promise.all(
+  LANES.map(async (lane) => ({ lane, entries: await getEntries(lane) })),
+);
+---
+
+<Base title="AJ Van Beest">
+  <main>
+    <h1>AJ Van Beest</h1>
+    <p>I build robots to fight cybercrime.</p>
+    <ul>
+      {counts.map(({ lane, entries }) => (
+        <li>
+          <strong>{LANE_LABEL[lane]}</strong>: {entries.length}
+          <ul>
+            {entries.map((e) => (
+              <li>
+                {formatDate(e.date)} · {e.maturity} · {e.title}
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  </main>
+</Base>
