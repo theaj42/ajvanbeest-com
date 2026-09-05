@@ -4,7 +4,7 @@ description: "How I built and deployed a production background work system that 
 date: 2025-06-28
 maturity: seedling
 tags: ["ai-autonomous-systems", "productivity-automation", "infrastructure-background-processing", "content-type-technical-deep-dive"]
-draft: true
+draft: false
 ---
 
 Most "background work" systems are glorified schedulers that run predefined scripts. I needed something fundamentally different: an AI system that could work autonomously on complex, multi-step projects while I focused on other tasks. After months of development, the system achieved its first major success: **4 projects, 8 deliverables, 38.5 minutes** of autonomous work with production-quality results.

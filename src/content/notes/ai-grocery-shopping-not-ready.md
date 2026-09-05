@@ -5,7 +5,7 @@ description: "For about a year and a half, I've had this dream: Give my AI assis
 date: 2026-02-07
 maturity: seedling
 tags: ["ai", "automation", "mcp", "grocery", "practical-ai"]
-draft: true
+draft: false
 ---
 
 For about a year and a half, I've had this dream: Give my AI assistant a shopping list, have it programmatically add items to my grocery cart, review the cart myself, checkout manually, and pick up curbside. Simple, right?
