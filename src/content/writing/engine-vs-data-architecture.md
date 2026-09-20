@@ -1,6 +1,7 @@
 ---
-title: "I Work in Security. I Still Built My AI Assistant Privacy-Last."
-description: I understand privacy. I built my AI assistant without it anyway, then had to unwind the whole thing.
+title: I Work in Security. I Still Built My AI Assistant Privacy-Last.
+description: I understand privacy. I built my AI assistant without it anyway, then
+  had to unwind the whole thing.
 date: '2026-09-20'
 maturity: growing
 tags:
