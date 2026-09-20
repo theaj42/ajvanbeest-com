@@ -1,14 +1,14 @@
 ---
-title: Engine vs Data Architecture for AI Assistants
-description: Separate reusable AI capabilities from governed personal and work data
-  without breaking multi-machine workflows.
+title: "I Work in Security. I Still Built My AI Assistant Privacy-Last."
+description: I understand privacy. I built my AI assistant without it anyway, then had to unwind the whole thing.
 date: '2026-09-20'
-maturity: seedling
+maturity: growing
 tags:
 - ai-assistants
-- architecture
-- data-governance
-- multi-machine
+- privacy
+- personal-infrastructure
+- agents
+- security
 draft: false
 slug: engine-vs-data-architecture
 aliases: []
